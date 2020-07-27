@@ -12,23 +12,17 @@ import java.util.concurrent.CompletableFuture;
 import okhttp3.HttpUrl;
 import okhttp3.internal.http2.Header;
 
-final class GoogleUserInfoResult {
-    private final String picture;
-    private final String email;
+final class RedditUserInfoResult {
+    private final String icon_img;
     private final String name;
 
-    public GoogleUserInfoResult(String picture, String email, String name) {
-        this.picture = picture;
-        this.email = email;
+    public RedditUserInfoResult(String icon_img, String name) {
+        this.icon_img = icon_img;
         this.name = name;
     }
 
-    public String getPicture() {
-        return picture;
-    }
-
-    public String getEmail() {
-        return email;
+    public String getIcon_img() {
+        return icon_img;
     }
 
     public String getName() {
@@ -37,41 +31,38 @@ final class GoogleUserInfoResult {
 }
 
 
-public class GoogleHandler extends AbstractLoginHandler {
+public class RedditHandler extends AbstractLoginHandler {
 
-    private final String RESPONSE_TYPE = "token id_token";
+    private final String RESPONSE_TYPE = "token";
 
-    private final String SCOPE = "profile email openid";
+    private final String SCOPE = "identity";
 
-    private final String PROMPT = "consent select_account";
-
-    public GoogleHandler(LoginHandlerParams _params) {
+    public RedditHandler(LoginHandlerParams _params) {
         super(_params);
         this.setFinalUrl();
     }
 
     @Override
     protected void setFinalUrl() {
-        HttpUrl.Builder finalUrl = new HttpUrl.Builder().scheme("https").host("accounts.google.com").addPathSegments("o/oauth2/v2/auth");
+        HttpUrl.Builder finalUrl = new HttpUrl.Builder().scheme("https").host("www.reddit.com").addPathSegments("api/v1/authorize.compact");
         finalUrl.addQueryParameter("response_type", this.RESPONSE_TYPE);
         finalUrl.addQueryParameter("client_id", this.params.getClientId());
         finalUrl.addQueryParameter("state", this.getState());
         finalUrl.addQueryParameter("scope", this.SCOPE);
         finalUrl.addQueryParameter("redirect_uri", this.params.getRedirect_uri());
-        finalUrl.addQueryParameter("nonce", this.nonce);
-        finalUrl.addQueryParameter("prompt", this.PROMPT);
         this.finalURL = finalUrl.build().toString();
     }
 
     @Override
     public CompletableFuture<TorusVerifierResponse> getUserInfo(LoginWindowResponse params) {
         String accessToken = params.getAccessToken();
-        return HttpHelpers.get("https://www.googleapis.com/userinfo/v2/me", new Header[]{
+        return HttpHelpers.get("https://oauth.reddit.com/api/v1/me", new Header[]{
                 new Header("Authorization", "Bearer " + accessToken)
         }).thenComposeAsync(resp -> {
             Gson gson = new Gson();
-            GoogleUserInfoResult result = gson.fromJson(resp, GoogleUserInfoResult.class);
-            return CompletableFuture.supplyAsync(() -> new TorusVerifierResponse(result.getEmail(), result.getName(), result.getPicture(), this.params.getVerifier(), result.getEmail().toLowerCase(), this.params.getTypeOfLogin()));
+            RedditUserInfoResult result = gson.fromJson(resp, RedditUserInfoResult.class);
+            return CompletableFuture.supplyAsync(() -> new TorusVerifierResponse("", result.getName(), result.getIcon_img().split("\\?").length > 0 ?
+                    result.getIcon_img().split("\\?")[0] : result.getIcon_img(), this.params.getVerifier(), result.getName().toLowerCase(), this.params.getTypeOfLogin()));
         });
 
     }
