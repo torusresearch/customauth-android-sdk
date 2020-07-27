@@ -1,88 +1,77 @@
 package org.torusresearch.torusdirect.handlers;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-
-import androidx.browser.customtabs.CustomTabsIntent;
-
 import com.google.gson.Gson;
 
-import org.torusresearch.torusdirect.types.State;
+import org.torusresearch.torusdirect.types.LoginHandlerParams;
+import org.torusresearch.torusdirect.types.LoginWindowResponse;
+import org.torusresearch.torusdirect.types.TorusVerifierResponse;
+import org.torusresearch.torusdirect.utils.HttpHelpers;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import java.util.concurrent.CompletableFuture;
 
+import okhttp3.HttpUrl;
+import okhttp3.internal.http2.Header;
 
-public class GoogleHandler implements ILoginHandler {
-    private static String SCOPE = "profile email openid";
-    private static String RESPONSE_TYPE = "token id_token";
-    private static String PROMPT = "consent select_account";
-    private final String instanceId;
-    private final String clientId;
-    private final String redirectUri;
-    private final String verifier;
+final class GoogleUserInfoResult {
+    private final String picture;
+    private final String email;
+    private final String name;
 
-    public GoogleHandler(String _instanceId, String _clientId, String _redirectUri, String _verifier) {
-        instanceId = _instanceId;
-        clientId = _clientId;
-        redirectUri = _redirectUri;
-        verifier = _verifier;
+    public GoogleUserInfoResult(String picture, String email, String name) {
+        this.picture = picture;
+        this.email = email;
+        this.name = name;
     }
 
-    public String getPrompt() {
-        return PROMPT;
+    public String getPicture() {
+        return picture;
     }
 
-    @Override
-    public String getScope() {
-        return SCOPE;
+    public String getEmail() {
+        return email;
     }
 
-    @Override
-    public String getResponseType() {
-        return RESPONSE_TYPE;
+    public String getName() {
+        return name;
     }
+}
 
-    @Override
-    public String getState() {
-        State localState = new State(this.instanceId, this.verifier);
-        Gson gson = new Gson();
-        return gson.toJson(localState);
-    }
 
-    @Override
-    public String getFinalUrl() {
-        try {
-            StringBuilder sb = new StringBuilder();
-            sb.append("https://accounts.google.com/o/oauth2/v2/auth?response_type=");
-            sb.append(URLEncoder.encode(this.getResponseType(), "utf-8"));
-            sb.append("&client_id=");
-            sb.append(this.clientId);
-            sb.append("&state=");
-            sb.append(URLEncoder.encode(this.getState(), "utf-8"));
-            sb.append("&scope=");
-            sb.append(URLEncoder.encode(this.getScope(), "utf-8"));
-            sb.append("&redirect_uri=");
-            sb.append(URLEncoder.encode(redirectUri, "utf-8"));
-            sb.append("&nonce=");
-            sb.append(this.instanceId);
-            sb.append("&prompt=");
-            sb.append(URLEncoder.encode(this.getPrompt(), "utf-8"));
-            return sb.toString();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return "";
-        }
+public class GoogleHandler extends AbstractLoginHandler {
+
+    private final String RESPONSE_TYPE = "token id_token";
+
+    private final String SCOPE = "profile email openid";
+
+    private final String PROMPT = "consent select_account";
+
+    public GoogleHandler(LoginHandlerParams _params) {
+        super(_params);
     }
 
     @Override
-    public Intent handleLogin(Context ctx) {
-        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-        CustomTabsIntent intent = builder.build();
-        intent.intent.setData(Uri.parse(this.getFinalUrl()));
-        return intent.intent;
+    protected void setFinalUrl() {
+        HttpUrl.Builder finalUrl = new HttpUrl.Builder().scheme("https").host("accounts.google.com").addPathSegments("o/oauth2/v2/auth");
+        finalUrl.addQueryParameter("response_type", this.RESPONSE_TYPE);
+        finalUrl.addQueryParameter("client_id", this.params.getClientId());
+        finalUrl.addQueryParameter("state", this.getState());
+        finalUrl.addQueryParameter("scope", this.SCOPE);
+        finalUrl.addQueryParameter("redirect_uri", this.params.getRedirect_uri());
+        finalUrl.addQueryParameter("nonce", this.nonce);
+        finalUrl.addQueryParameter("prompt", this.PROMPT);
+        this.finalURL = finalUrl.build().toString();
     }
 
-    public UserInfo
+    @Override
+    public CompletableFuture<TorusVerifierResponse> getUserInfo(LoginWindowResponse params) {
+        String accessToken = params.getAccessToken();
+        return HttpHelpers.get("https://www.googleapis.com/userinfo/v2/me", new Header[]{
+                new Header("Authorization", "Bearer " + accessToken)
+        }).thenComposeAsync(resp -> {
+            Gson gson = new Gson();
+            GoogleUserInfoResult result = gson.fromJson(resp, GoogleUserInfoResult.class);
+            return CompletableFuture.supplyAsync(() -> new TorusVerifierResponse(result.getEmail(), result.getName(), result.getPicture(), this.params.getVerifier(), result.getEmail().toLowerCase(), this.params.getTypeOfLogin()));
+        });
+
+    }
 }

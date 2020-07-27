@@ -9,9 +9,9 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="/run/media/chai/repos/torus/TorusDirectAndroid" />
-            <option value="/run/media/chai/repos/torus/TorusDirectAndroid/app" />
-            <option value="/run/media/chai/repos/torus/TorusDirectAndroid/torusdirect" />
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/torusdirect" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

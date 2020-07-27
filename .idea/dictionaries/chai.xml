@@ -2,6 +2,7 @@
   <dictionary name="chai">
     <words>
       <w>reddit</w>
+      <w>stringified</w>
     </words>
   </dictionary>
 </component>
