@@ -2,7 +2,7 @@ package org.torusresearch.torusdirect.handlers;
 
 import com.google.gson.Gson;
 
-import org.torusresearch.torusdirect.types.LoginHandlerParams;
+import org.torusresearch.torusdirect.types.CreateHandlerParams;
 import org.torusresearch.torusdirect.types.LoginWindowResponse;
 import org.torusresearch.torusdirect.types.TorusVerifierResponse;
 import org.torusresearch.torusdirect.utils.HttpHelpers;
@@ -45,7 +45,7 @@ public class GoogleHandler extends AbstractLoginHandler {
 
     private final String PROMPT = "consent select_account";
 
-    public GoogleHandler(LoginHandlerParams _params) {
+    public GoogleHandler(CreateHandlerParams _params) {
         super(_params);
         this.setFinalUrl();
     }

@@ -3,7 +3,7 @@ package org.torusresearch.torusdirect.handlers;
 import com.google.gson.Gson;
 
 import org.torusresearch.torusdirect.interfaces.ILoginHandler;
-import org.torusresearch.torusdirect.types.LoginHandlerParams;
+import org.torusresearch.torusdirect.types.CreateHandlerParams;
 import org.torusresearch.torusdirect.types.LoginWindowResponse;
 import org.torusresearch.torusdirect.types.State;
 import org.torusresearch.torusdirect.types.TorusVerifierResponse;
@@ -14,10 +14,10 @@ import java.util.concurrent.CompletableFuture;
 
 public abstract class AbstractLoginHandler implements ILoginHandler {
     protected final String nonce = UUID.randomUUID().toString();
-    protected LoginHandlerParams params;
+    protected CreateHandlerParams params;
     protected String finalURL;
 
-    public AbstractLoginHandler(LoginHandlerParams _params) {
+    public AbstractLoginHandler(CreateHandlerParams _params) {
         params = _params;
     }
 

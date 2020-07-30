@@ -2,9 +2,10 @@ package org.torusresearch.torusdirect.handlers;
 
 import com.google.gson.Gson;
 
-import org.torusresearch.torusdirect.types.LoginHandlerParams;
+import org.torusresearch.torusdirect.types.CreateHandlerParams;
 import org.torusresearch.torusdirect.types.LoginWindowResponse;
 import org.torusresearch.torusdirect.types.TorusVerifierResponse;
+import org.torusresearch.torusdirect.utils.Helpers;
 import org.torusresearch.torusdirect.utils.HttpHelpers;
 
 import java.util.concurrent.CompletableFuture;
@@ -56,7 +57,7 @@ public class DiscordHandler extends AbstractLoginHandler {
 
     private final String SCOPE = "identify email";
 
-    public DiscordHandler(LoginHandlerParams _params) {
+    public DiscordHandler(CreateHandlerParams _params) {
         super(_params);
         this.setFinalUrl();
     }
@@ -81,7 +82,7 @@ public class DiscordHandler extends AbstractLoginHandler {
             Gson gson = new Gson();
             DiscordUserInfoResult result = gson.fromJson(resp, DiscordUserInfoResult.class);
             String profileImage =
-                    result.getAvatar() == null || result.getAvatar().length() == 0
+                    Helpers.isEmpty(result.getAvatar())
                             ? "https://cdn.discordapp.com/embed/avatars/" + Integer.parseInt(result.getDiscriminator()) % 5 + ".png"
                             : "https://cdn.discordapp.com/avatars/" + result.getId() + "/" + result.getAvatar() + ".png?size=2048";
             return CompletableFuture.supplyAsync(() -> new TorusVerifierResponse(result.getEmail(), result.getUsername() + "#" + result.getDiscriminator(),

@@ -2,7 +2,7 @@ package org.torusresearch.torusdirect.handlers;
 
 import com.google.gson.Gson;
 
-import org.torusresearch.torusdirect.types.LoginHandlerParams;
+import org.torusresearch.torusdirect.types.CreateHandlerParams;
 import org.torusresearch.torusdirect.types.LoginWindowResponse;
 import org.torusresearch.torusdirect.types.TorusVerifierResponse;
 import org.torusresearch.torusdirect.utils.HttpHelpers;
@@ -73,7 +73,7 @@ public class FacebookHandler extends AbstractLoginHandler {
 
     private final String SCOPE = "profile_profile email";
 
-    public FacebookHandler(LoginHandlerParams _params) {
+    public FacebookHandler(CreateHandlerParams _params) {
         super(_params);
         this.setFinalUrl();
     }

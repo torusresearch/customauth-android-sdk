@@ -13,6 +13,5 @@ public enum LoginType {
     WEIBO,
     LINE,
     EMAIL_PASSWORD,
-    PASSWORDLESS,
     JWT
 }
