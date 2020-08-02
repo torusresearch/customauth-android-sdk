@@ -9,7 +9,6 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.browser.customtabs.CustomTabsClient;
-import androidx.browser.customtabs.CustomTabsIntent;
 
 import org.torusresearch.torusdirect.TorusDirectSdk;
 import org.torusresearch.torusdirect.types.DirectSdkArgs;
@@ -35,10 +34,8 @@ public class MainActivity extends AppCompatActivity {
 //        startActivityForResult(intent.intent, 200);
 //        Log.d("result:torus", "Started activity");
         DirectSdkArgs args = new DirectSdkArgs("https://app.tor.us/redirect");
-        args.setGoogleClientId("876733105116-i0hj3s53qiio5k95prpfmj0hp0gmgtor.apps.googleusercontent.com");
-        TorusDirectSdk sdk = new TorusDirectSdk(this, args);
-        Intent intent = sdk.triggerLogin("google", "google");
-        startActivityForResult(intent, 200);
+        TorusDirectSdk sdk = new TorusDirectSdk(args);
+        // sdk.triggerLogin()
     }
 
     @Override

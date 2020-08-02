@@ -43,7 +43,6 @@ public class JwtHandler extends AbstractLoginHandler {
         Auth0ClientOptions localOptions = new Auth0ClientOptions.Auth0ClientOptionsBuilder(domain)
                 .setClient_id(this.params.getClientId())
                 .setPrompt(this.PROMPT)
-                .setRedirect_uri(this.params.getRedirect_uri())
                 .setScope(this.SCOPE)
                 .setConnection(Helpers.loginToConnectionMap.get(this.params.getTypeOfLogin())).build();
         // These are separate because they must not be set by user using builder
@@ -56,7 +55,6 @@ public class JwtHandler extends AbstractLoginHandler {
 
         String finalOptionsDomain = finalOptions.getDomain();
         String finalOptionsClientId = finalOptions.getClient_id();
-        String finalOptionsRedirectUri = finalOptions.getRedirect_uri();
         String finalOptionsLeeway = finalOptions.getLeeway();
         Display finalOptionsDisplay = finalOptions.getDisplay();
         Prompt finalOptionsPrompt = finalOptions.getPrompt();
@@ -79,7 +77,7 @@ public class JwtHandler extends AbstractLoginHandler {
         finalUrl.addQueryParameter("response_type", finalOptionsResponseType);
         finalUrl.addQueryParameter("nonce", finalOptionsNonce);
         finalUrl.addQueryParameter("client_id", finalOptionsClientId);
-        finalUrl.addQueryParameter("redirect_uri", finalOptionsRedirectUri);
+        finalUrl.addQueryParameter("redirect_uri", this.params.getBrowserRedirectUri());
         // optional
         if (Helpers.isValid(finalOptionsLeeway))
             finalUrl.addQueryParameter("leeway", finalOptionsLeeway);

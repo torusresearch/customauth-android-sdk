@@ -38,7 +38,7 @@ public class TorusDirectSdk {
 
     public CompletableFuture<TorusLoginResponse> triggerLogin(SubVerifierDetails subVerifierDetails) {
         ILoginHandler handler = HandlerFactory.createHandler(new CreateHandlerParams(subVerifierDetails.getClientId(), subVerifierDetails.getVerifier(),
-                this.directSdkArgs.getRedirectUri(), subVerifierDetails.getTypeOfLogin(), subVerifierDetails.getJwtParams()));
+                this.directSdkArgs.getRedirectUri(), subVerifierDetails.getTypeOfLogin(), this.directSdkArgs.getBrowserRedirectUri(), subVerifierDetails.getJwtParams()));
         AtomicReference<LoginWindowResponse> loginWindowResponseAtomicReference = new AtomicReference<>();
         AtomicReference<TorusVerifierResponse> torusVerifierResponseAtomicReference = new AtomicReference<>();
         return handler.handleLoginWindow().thenComposeAsync(loginWindowResponse -> {
@@ -57,6 +57,14 @@ public class TorusDirectSdk {
             return new TorusLoginResponse(response, torusKey.getPrivateKey(), torusKey.getPublicAddress());
         });
     }
+
+//    public CompletableFuture<TorusAggregateLoginResponse> triggerAggregateLogin(AggregateLoginParams aggregateLoginParams) {
+//        AggregateVerifierType aggregateVerifierType = aggregateLoginParams.getAggregateVerifierType();
+//        SubVerifierDetails[] subVerifierDetailsArray = aggregateLoginParams.getSubVerifierDetailsArray();
+//        if (aggregateVerifierType == AggregateVerifierType.SINGLE_VERIFIER_ID && subVerifierDetailsArray.length != 1) {
+//            throw new InvalidParameterException("Single id verifier can only have one sub verifier");
+//        }
+//    }
 
     public CompletableFuture<TorusKey> getTorusKey(String verifier, String verifierId, HashMap<String, Object> verifierParams, String idToken) {
         AtomicReference<NodeDetails> nodeDetailsAtomicReference = new AtomicReference<>();

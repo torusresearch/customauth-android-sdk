@@ -57,7 +57,7 @@ public class GoogleHandler extends AbstractLoginHandler {
         finalUrl.addQueryParameter("client_id", this.params.getClientId());
         finalUrl.addQueryParameter("state", this.getState());
         finalUrl.addQueryParameter("scope", this.SCOPE);
-        finalUrl.addQueryParameter("redirect_uri", this.params.getRedirect_uri());
+        finalUrl.addQueryParameter("redirect_uri", this.params.getBrowserRedirectUri());
         finalUrl.addQueryParameter("nonce", this.nonce);
         finalUrl.addQueryParameter("prompt", this.PROMPT);
         this.finalURL = finalUrl.build().toString();

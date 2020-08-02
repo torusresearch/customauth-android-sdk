@@ -9,7 +9,6 @@ public class Auth0ClientOptions {
     private String domain;
     // optional
     private String client_id;
-    private String redirect_uri;
     private String leeway;
     private String verifierIdField;
     private Boolean isVerifierIdCaseSensitive;
@@ -32,7 +31,6 @@ public class Auth0ClientOptions {
     private Auth0ClientOptions(Auth0ClientOptionsBuilder builder) {
         this.domain = builder.domain;
         this.client_id = builder.client_id;
-        this.redirect_uri = builder.redirect_uri;
         this.leeway = builder.leeway;
         this.verifierIdField = builder.verifierIdField;
         this.isVerifierIdCaseSensitive = builder.isVerifierIdCaseSensitive;
@@ -79,10 +77,6 @@ public class Auth0ClientOptions {
 
     public String getClient_id() {
         return client_id;
-    }
-
-    public String getRedirect_uri() {
-        return redirect_uri;
     }
 
     public String getLeeway() {
@@ -145,7 +139,6 @@ public class Auth0ClientOptions {
     public Auth0ClientOptions merge(Auth0ClientOptions options) {
         this.domain = Helpers.mergeValue(this.domain, options.getDomain());
         this.client_id = Helpers.mergeValue(this.client_id, options.getClient_id());
-        this.redirect_uri = Helpers.mergeValue(this.redirect_uri, options.getRedirect_uri());
         this.leeway = Helpers.mergeValue(this.leeway, options.getLeeway());
         this.verifierIdField = Helpers.mergeValue(this.verifierIdField, options.getVerifierIdField());
         this.isVerifierIdCaseSensitive = Helpers.mergeValue(this.isVerifierIdCaseSensitive, options.getVerifierIdCaseSensitive());
@@ -168,7 +161,6 @@ public class Auth0ClientOptions {
         private String domain;
         // optional
         private String client_id;
-        private String redirect_uri;
         private String leeway;
         private String verifierIdField;
         private Boolean isVerifierIdCaseSensitive;
@@ -190,11 +182,6 @@ public class Auth0ClientOptions {
 
         public Auth0ClientOptionsBuilder setClient_id(String client_id) {
             this.client_id = client_id;
-            return this;
-        }
-
-        public Auth0ClientOptionsBuilder setRedirect_uri(String redirect_uri) {
-            this.redirect_uri = redirect_uri;
             return this;
         }
 

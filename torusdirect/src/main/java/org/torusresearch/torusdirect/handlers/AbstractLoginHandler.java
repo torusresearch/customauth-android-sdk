@@ -22,7 +22,7 @@ public abstract class AbstractLoginHandler implements ILoginHandler {
     }
 
     public String getState() {
-        State localState = new State(this.nonce, this.params.getVerifier());
+        State localState = new State(this.nonce, this.params.getVerifier(), this.params.getRedirect_uri());
         Gson gson = new Gson();
         String stringifiedState = gson.toJson(localState, State.class);
         return Base64.getUrlEncoder().encodeToString(Base64.getEncoder().encode(stringifiedState.getBytes()));
@@ -35,6 +35,8 @@ public abstract class AbstractLoginHandler implements ILoginHandler {
 
     @Override
     public CompletableFuture<LoginWindowResponse> handleLoginWindow() {
+        // open this.finalURL
+        // capture redirected url
         throw new UnsupportedOperationException("Implement this method");
     }
 }

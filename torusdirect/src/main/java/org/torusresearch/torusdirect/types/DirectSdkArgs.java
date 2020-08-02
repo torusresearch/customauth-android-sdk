@@ -1,14 +1,21 @@
 package org.torusresearch.torusdirect.types;
 
 public class DirectSdkArgs {
+    // Android package redirect uri
     private final String redirectUri;
     private final TorusNetwork network;
     private final String proxyContractAddress;
+    private String browserRedirectUri;
 
     public DirectSdkArgs(String _redirectUri, TorusNetwork network, String proxyContractAddress) {
+        this(_redirectUri, network, proxyContractAddress, "https://scripts.toruswallet.io/redirect.html");
+    }
+
+    public DirectSdkArgs(String _redirectUri, TorusNetwork network, String proxyContractAddress, String browserRedirectUri) {
         this.redirectUri = _redirectUri;
         this.network = network;
         this.proxyContractAddress = proxyContractAddress;
+        this.browserRedirectUri = browserRedirectUri;
     }
 
     public DirectSdkArgs(String _redirectUri) {
@@ -27,4 +34,7 @@ public class DirectSdkArgs {
         return proxyContractAddress;
     }
 
+    public String getBrowserRedirectUri() {
+        return browserRedirectUri;
+    }
 }

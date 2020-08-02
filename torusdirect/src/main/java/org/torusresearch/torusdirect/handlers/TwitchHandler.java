@@ -73,7 +73,7 @@ public class TwitchHandler extends AbstractLoginHandler {
         finalUrl.addQueryParameter("client_id", this.params.getClientId());
         finalUrl.addQueryParameter("state", this.getState());
         finalUrl.addQueryParameter("scope", this.SCOPE);
-        finalUrl.addQueryParameter("redirect_uri", this.params.getRedirect_uri());
+        finalUrl.addQueryParameter("redirect_uri", this.params.getBrowserRedirectUri());
         finalUrl.addQueryParameter("force_verify", "true");
         this.finalURL = finalUrl.build().toString();
     }
