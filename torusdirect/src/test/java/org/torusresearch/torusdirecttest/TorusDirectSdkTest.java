@@ -9,6 +9,6 @@ public class TorusDirectSdkTest {
     @Test
     public void ctorInitialization() {
         DirectSdkArgs args = new DirectSdkArgs("https://localhost:3000/redirect");
-        TorusDirectSdk sdk = new TorusDirectSdk(args);
+        TorusDirectSdk sdk = new TorusDirectSdk(args, null);
     }
 }
