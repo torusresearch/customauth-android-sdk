@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     buildToolsVersion "29.0.3"
 
     defaultConfig {
         minSdkVersion 26
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 
@@ -35,6 +35,7 @@ dependencies {
     implementation 'com.github.torusresearch:fetch-node-details-java:1.0.5'
     implementation 'org.torusresearch:torus-utils-java:1.0.0'
     implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'org.web3j:crypto:4.6.1'
     implementation 'androidx.appcompat:appcompat:1.1.0'
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.6.2"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.6.2"
