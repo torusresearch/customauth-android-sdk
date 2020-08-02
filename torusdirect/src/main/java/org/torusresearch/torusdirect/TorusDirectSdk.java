@@ -1,5 +1,7 @@
 package org.torusresearch.torusdirect;
 
+import android.content.Context;
+
 import org.torusresearch.fetchnodedetails.FetchNodeDetails;
 import org.torusresearch.fetchnodedetails.types.EthereumNetwork;
 import org.torusresearch.fetchnodedetails.types.NodeDetails;
@@ -27,11 +29,13 @@ import java.util.concurrent.atomic.AtomicReference;
 public class TorusDirectSdk {
     private final DirectSdkArgs directSdkArgs;
     private final FetchNodeDetails nodeDetailManager;
+    private final Context context;
 
-    public TorusDirectSdk(DirectSdkArgs _directSdkArgs) {
+    public TorusDirectSdk(DirectSdkArgs _directSdkArgs, Context context) {
         this.directSdkArgs = _directSdkArgs;
         this.nodeDetailManager = new FetchNodeDetails(this.directSdkArgs.getNetwork() == TorusNetwork.TESTNET ? EthereumNetwork.ROPSTEN : EthereumNetwork.MAINNET,
                 this.directSdkArgs.getProxyContractAddress());
+        this.context = context;
         // maybe do this for caching
         this.nodeDetailManager.getNodeDetails().thenRun(() -> System.out.println("Fetched Node Details"));
     }
@@ -41,7 +45,7 @@ public class TorusDirectSdk {
                 this.directSdkArgs.getRedirectUri(), subVerifierDetails.getTypeOfLogin(), this.directSdkArgs.getBrowserRedirectUri(), subVerifierDetails.getJwtParams()));
         AtomicReference<LoginWindowResponse> loginWindowResponseAtomicReference = new AtomicReference<>();
         AtomicReference<TorusVerifierResponse> torusVerifierResponseAtomicReference = new AtomicReference<>();
-        return handler.handleLoginWindow().thenComposeAsync(loginWindowResponse -> {
+        return handler.handleLoginWindow(context).thenComposeAsync(loginWindowResponse -> {
             loginWindowResponseAtomicReference.set(loginWindowResponse);
             return handler.getUserInfo(loginWindowResponse);
         }).thenComposeAsync(userInfo -> {
