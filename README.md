@@ -1,73 +1,105 @@
-# Torus Direct Android SDK
+# Torus-direct-android-sdk
 
-This Android SDK allows you to implement DirectAuth within your android app.
-It imports [fetch-node-details-java](https://github.com/torusresearch/fetch-node-details-java) to fetch information about the nodes within the Torus Network from a smart contract on Ethereum, and imports [torus-utils-java](https://github.com/torusresearch/torus-utils-java) to retrieve users' shares from the Torus Network.
+[![](https://jitpack.io/v/org.torusresearch/torus-direct-android-sdk.svg)](https://jitpack.io/#org.torusresearch/torus-direct-android-sdk)
 
-The main logic implemented by this package is to fill in the key intermediate step of retrieving user-specific identifying information that is used by torus-utils-java to validate user identities to the nodes on the network.
+## Introduction
 
-In particular for default supported logins like Google/Facebook, they provide a unique user identification token based on the clientID that is provided.
+This repo allows web applications to directly retrieve keys stored on the Torus Network. The attestation layer for the Torus Network is generalizable, below is an example of how to access keys via the SDK via Google.
 
-For DirectAuth integrations, you will need to provide the clientIDs in the initialization step.
+## Features
 
-Default supported logins:
-- Google
-- Facebook
-- Reddit
-- Discord
-- Twitch
+- All API's return `CompletableFutures`
+- Example included
 
-```
-    class DirectSdkArgs(
-        val googleClientId: String?,
-        val facebookClientId: String?,
-        val redditClientId: String?,
-        val twitchClientId: String?,
-        val discordClientId: String?,
-        val baseUrl: String,
-        val network: EthereumNetwork?,
-        val proxyContractAddress: String?
-    )
+## Installation
+
+Typically your application should depend on release versions of torus-direct-android-sdk, but you may also use snapshot dependencies for early access to features and fixes, refer to the Snapshot Dependencies section.
+This project uses [jitpack](https://jitpack.io/docs/) for release management
+
+Add the relevant dependency to your project:
+
+```groovy
+repositories {
+        maven { url "https://jitpack.io" }
+   }
+   dependencies {
+         implementation 'org.torusresearch:torus-direct-android-sdk:1.0.0'
+   }
 ```
 
-## Custom logins
+## Usage
 
-If you already have an existing login system that you wish to use DirectAuth with, you can do so
-via a custom provider.
+To allow your web app to retrieve keys:
 
-You'll need to host a separate signing server which implements a signing API which accepts AuthorizeParams,
-and responds with AuthorizeResult.
+1. Install the package
 
-The idtoken in AuthorizeResult is the raw ECDSA signature on a JSON object (SignedData).
+2. At verifier's interface (where you obtain client id), please use `browserRedirectUri` in DirectSdkArgs (default: 'https://scripts.toruswallet.io/redirect.html')
+ as the redirect uri. If you specify a custom `browserRedirectUri`, pls host [redirect.html](torusdirect/src/main/java/org/torusresearch/torusdirect/activity/redirect.html) at that url.
 
+3. Instantiate the package with your own specific client-id
+
+4. Trigger the login
+
+5. Reach out to hello@tor.us to get your verifier spun up on the testnet today!
+
+## Examples
+
+Please refer to example for configuration
+
+## Info
+
+The following links help you create OAuth accounts with different login providers
+
+- [Google](https://support.google.com/googleapi/answer/6158849)
+- [Facebook](https://developers.facebook.com/docs/apps)
+- [Reddit](https://github.com/reddit-archive/reddit/wiki/oauth2)
+- [Twitch](https://dev.twitch.tv/docs/authentication/#registration)
+- [Discord](https://discord.com/developers/docs/topics/oauth2)
+
+For other verifiers,
+
+- you'll need to create an [Auth0 account](https://auth0.com/)
+- [create an application](https://auth0.com/docs/connections) for the login type you want
+- Pass in the clientId, domain of the Auth0 application into the torus login request
+
+## Best practices
+
+- Please run the entire sdk calls in a new threadpool. Refer to example for basic configuration.
+
+## FAQ
+
+##
+
+**Question:** Discord Login only works once in 30 min
+
+**Answer:**
+Torus Login requires a new token for every login attempt. Discord returns the same access token for 30 min unless it's revoked. Unfortunately, it needs to be revoked from the backend since it needs a client secret. Here's some sample code which does it
+
+```js
+const axios = require("axios").default;
+const FormData = require("form-data");
+
+const { DISCORD_CLIENT_SECRET, DISCORD_CLIENT_ID } = process.env;
+const { token } = req.body;
+const formData = new FormData();
+formData.append("token", token);
+await axios.post("https://discordapp.com/api/oauth2/token/revoke", formData, {
+  headers: {
+    ...formData.getHeaders(),
+    Authorization: `Basic ${Buffer.from(`${DISCORD_CLIENT_ID}:${DISCORD_CLIENT_SECRET}`, "binary").toString("base64")}`,
+  },
+});
 ```
-// go example
-//
-type (
-// SignedData is a data struct that needs to be ECDSA signed
-	SignedData struct {
-		VerifierID string  `json:"verifier_id"`
-		Timestamp  big.Int `json:"timestamp"`
-	}
-// AuthorizeParams are the params needed for authorization.
-	AuthorizeParams struct {
-		VerifierID     string `json:"verifier_id"`
-		VerifierIDType string `json:"verifier_id_type"`
-		RedirectURI    string `json:"redirect_uri"`
-		State          string `json:"state"`
-		Hash           string `json:"hash"`
-	}
-// AuthorizeResult is the response of an authorization.
-	AuthorizeResult struct {
-		RedirectURI string  `json:"redirect_uri"`
-		State       string  `json:"state"`
-		VerifierID  string  `json:"verifier_id"`
-		Timestamp   big.Int `json:"timestamp"`
-		IDToken     string  `json:"idtoken"`
-	}
-)
-```
 
-You will also need to register your public key via a service provider (eg. Torus).
+##
 
-For a live example of how this works, you can visit https://alpha.tor.us, which demonstrates a custom Torus Login via email/phone number.
+**Question:** How to initialise web3 with private key (returned after login) ?
+
+**Answer:**
+Use web3j
+
+## Requirements
+
+- Android - API level 24
+- Java 8
 
