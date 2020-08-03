@@ -16,9 +16,10 @@ import org.torusresearch.torusdirect.types.SubVerifierDetails;
 import org.torusresearch.torusdirect.types.TorusLoginResponse;
 import org.torusresearch.torusdirect.types.TorusNetwork;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
+
+import java8.util.concurrent.CompletableFuture;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -31,19 +32,19 @@ public class MainActivity extends AppCompatActivity {
     public void launch(View view) {
         DirectSdkArgs args = new DirectSdkArgs("torusapp://org.torusresearch.torusdirectandroid/redirect", TorusNetwork.TESTNET, "0x4023d2a0D330bF11426B12C6144Cfb96B7fa6183");
         TorusDirectSdk sdk = new TorusDirectSdk(args, this);
-        CompletableFuture<TorusLoginResponse> torusLoginResponseCompletableFuture = sdk.triggerLogin(new SubVerifierDetails(LoginType.GOOGLE,
-                "google-lrc",
-                "221898609709-obfn3p63741l5333093430j3qeiinaa8.apps.googleusercontent.com",
-                new Auth0ClientOptions.Auth0ClientOptionsBuilder("").build()));
         Executors.newFixedThreadPool(10).submit(() -> {
             try {
+                CompletableFuture<TorusLoginResponse> torusLoginResponseCompletableFuture = sdk.triggerLogin(new SubVerifierDetails(LoginType.GOOGLE,
+                        "google-lrc",
+                        "221898609709-obfn3p63741l5333093430j3qeiinaa8.apps.googleusercontent.com",
+                        new Auth0ClientOptions.Auth0ClientOptionsBuilder("").build()));
                 TorusLoginResponse torusLoginResponse = torusLoginResponseCompletableFuture.get();
-                Log.d(MainActivity.class.getSimpleName(), "Private Key:: " + torusLoginResponse.getPrivateKey());
-                Log.d(MainActivity.class.getSimpleName(), "Public Address:: " + torusLoginResponse.getPublicAddress());
-                runOnUiThread(() -> ((TextView)findViewById(R.id.output)).setText("Private Key:: " + torusLoginResponse.getPrivateKey() + "\n" + "Public Address:: " + torusLoginResponse.getPublicAddress()));
+                Log.d(MainActivity.class.getSimpleName(), "Private Key: " + torusLoginResponse.getPrivateKey());
+                Log.d(MainActivity.class.getSimpleName(), "Public Address: " + torusLoginResponse.getPublicAddress());
+                runOnUiThread(() -> ((TextView) findViewById(R.id.output)).setText("Private Key: " + torusLoginResponse.getPrivateKey() + "\n" + "Public Address: " + torusLoginResponse.getPublicAddress()));
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
-                runOnUiThread(() -> ((TextView)findViewById(R.id.output)).setText("Something went wrong."));
+                runOnUiThread(() -> ((TextView) findViewById(R.id.output)).setText("Something went wrong."));
             }
         });
     }

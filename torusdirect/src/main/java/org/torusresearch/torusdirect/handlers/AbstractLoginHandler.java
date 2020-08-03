@@ -15,7 +15,8 @@ import org.torusresearch.torusdirect.types.TorusVerifierResponse;
 
 import java.util.Base64;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+
+import java8.util.concurrent.CompletableFuture;
 
 public abstract class AbstractLoginHandler implements ILoginHandler {
     protected final String nonce = UUID.randomUUID().toString();

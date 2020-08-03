@@ -31,9 +31,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+
+import java8.util.concurrent.CompletableFuture;
 
 
 public class TorusDirectSdk {
@@ -66,8 +67,11 @@ public class TorusDirectSdk {
             return this.getTorusKey(subVerifierDetails.getVerifier(), userInfo.getVerifierId(), verifierParams, !Helpers.isEmpty(response.getIdToken()) ? response.getIdToken() : response.getAccessToken());
         }).thenApplyAsync(torusKey -> {
             TorusVerifierResponse torusVerifierResponse = torusVerifierResponseAtomicReference.get();
+            LoginWindowResponse loginWindowResponse = loginWindowResponseAtomicReference.get();
             TorusVerifierUnionResponse response = new TorusVerifierUnionResponse(torusVerifierResponse.getEmail(), torusVerifierResponse.getName(), torusVerifierResponse.getProfileImage(),
                     torusVerifierResponse.getVerifier(), torusVerifierResponse.getVerifierId(), torusVerifierResponse.getTypeOfLogin());
+            response.setAccessToken(loginWindowResponse.getAccessToken());
+            response.setIdToken(loginWindowResponse.getIdToken());
             return new TorusLoginResponse(response, torusKey.getPrivateKey(), torusKey.getPublicAddress());
         });
     }
@@ -141,7 +145,7 @@ public class TorusDirectSdk {
             }
         }).thenApplyAsync(shareResponse -> {
             if (shareResponse == null) return null;
-            if (!shareResponse.getEthAddress().equals(torusPublicKeyAtomicReference.get().getAddress()))
+            if (!shareResponse.getEthAddress().toLowerCase().equals(torusPublicKeyAtomicReference.get().getAddress().toLowerCase()))
                 return null;
             return new TorusKey(shareResponse.getPrivKey(), shareResponse.getEthAddress());
         });

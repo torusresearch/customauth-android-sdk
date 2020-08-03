@@ -8,8 +8,7 @@ import org.torusresearch.torusdirect.types.TorusVerifierResponse;
 import org.torusresearch.torusdirect.utils.Helpers;
 import org.torusresearch.torusdirect.utils.HttpHelpers;
 
-import java.util.concurrent.CompletableFuture;
-
+import java8.util.concurrent.CompletableFuture;
 import okhttp3.HttpUrl;
 import okhttp3.internal.http2.Header;
 
