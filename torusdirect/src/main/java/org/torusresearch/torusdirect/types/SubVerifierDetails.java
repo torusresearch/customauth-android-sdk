@@ -13,6 +13,10 @@ public class SubVerifierDetails {
         this.jwtParams = jwtParams;
     }
 
+    public SubVerifierDetails(LoginType typeOfLogin, String verifier, String clientId) {
+        this(typeOfLogin, verifier, clientId, new Auth0ClientOptions.Auth0ClientOptionsBuilder("").build());
+    }
+
     public LoginType getTypeOfLogin() {
         return typeOfLogin;
     }
