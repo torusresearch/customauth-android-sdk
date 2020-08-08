@@ -40,12 +40,14 @@ import java8.util.concurrent.CompletableFuture;
 public class TorusDirectSdk {
     private final DirectSdkArgs directSdkArgs;
     private final FetchNodeDetails nodeDetailManager;
+    private final TorusUtils torusUtils;
     private final Context context;
 
     public TorusDirectSdk(DirectSdkArgs _directSdkArgs, Context context) {
         this.directSdkArgs = _directSdkArgs;
         this.nodeDetailManager = new FetchNodeDetails(this.directSdkArgs.getNetwork() == TorusNetwork.TESTNET ? EthereumNetwork.ROPSTEN : EthereumNetwork.MAINNET,
                 this.directSdkArgs.getProxyContractAddress());
+        this.torusUtils = new TorusUtils();
         this.context = context;
         // maybe do this for caching
         this.nodeDetailManager.getNodeDetails().thenRun(() -> System.out.println("Fetched Node Details"));
@@ -132,13 +134,13 @@ public class TorusDirectSdk {
         AtomicReference<TorusPublicKey> torusPublicKeyAtomicReference = new AtomicReference<>();
         return this.nodeDetailManager.getNodeDetails().thenComposeAsync((details) -> {
                     nodeDetailsAtomicReference.set(details);
-                    return TorusUtils.getPublicAddress(details.getTorusNodeEndpoints(), details.getTorusNodePub(), new VerifierArgs(verifier, verifierId));
+            return torusUtils.getPublicAddress(details.getTorusNodeEndpoints(), details.getTorusNodePub(), new VerifierArgs(verifier, verifierId));
                 }
         ).thenComposeAsync(torusPublicKey -> {
             NodeDetails details = nodeDetailsAtomicReference.get();
             torusPublicKeyAtomicReference.set(torusPublicKey);
             try {
-                return TorusUtils.retrieveShares(details.getTorusNodeEndpoints(), details.getTorusIndexes(), verifier, verifierParams, idToken);
+                return torusUtils.retrieveShares(details.getTorusNodeEndpoints(), details.getTorusIndexes(), verifier, verifierParams, idToken);
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
