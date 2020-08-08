@@ -11,7 +11,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 30
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -36,7 +36,7 @@ dependencies {
     implementation 'com.auth0:java-jwt:3.10.3'
     implementation 'com.squareup.okhttp3:okhttp:4.8.0'
     implementation 'org.torusresearch:fetch-node-details-java:1.0.7'
-    implementation 'org.torusresearch:torus-utils-java:dac24267a7'
+    implementation 'org.torusresearch:torus-utils-java:1.0.2'
     implementation 'com.google.code.gson:gson:2.8.6'
     //noinspection GradleDependency
     api 'org.web3j:crypto:4.6.0-android'
