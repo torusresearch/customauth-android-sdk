@@ -24,7 +24,12 @@ public class StartUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_startup);
 
         CustomTabsIntent intent = new CustomTabsIntent.Builder().build();
-        intent.launchUrl(this, Uri.parse(getIntent().getStringExtra(URL)));
+        String data = getIntent().getStringExtra(URL);
+        if (data == null) {
+            Log.d("init:torus", "getStringExtra(URL) is NULL!!");
+            data = getIntent().getDataString();
+        }
+        intent.launchUrl(this, Uri.parse(data));
         startActivity(intent.intent);
     }
 
