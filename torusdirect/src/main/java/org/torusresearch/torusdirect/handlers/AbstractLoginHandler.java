@@ -44,6 +44,10 @@ public abstract class AbstractLoginHandler implements ILoginHandler {
         loginWindowResponseCompletableFuture.complete(loginWindowResponse);
     }
 
+    public String getFinalURL() {
+        return this.finalURL;
+    }
+
     protected abstract void setFinalUrl();
 
     @Override
