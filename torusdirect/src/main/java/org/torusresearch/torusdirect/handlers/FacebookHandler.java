@@ -70,7 +70,7 @@ public class FacebookHandler extends AbstractLoginHandler {
 
     private final String RESPONSE_TYPE = "token";
 
-    private final String SCOPE = "profile_profile email";
+    private final String SCOPE = "public_profile email";
 
     public FacebookHandler(CreateHandlerParams _params) {
         super(_params);
