@@ -36,9 +36,9 @@ public class StartUpActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        if(intent != null) {
+        if (intent != null && intent.getData() != null) {
             Log.d("result:torus", Objects.requireNonNull(intent.getData()).toString());
-            if(loginHandler != null && loginHandler.get() != null) {
+            if (loginHandler != null && loginHandler.get() != null) {
                 loginHandler.get().setResponse(intent.getData().toString());
                 loginHandler.set(null);
                 finish();
