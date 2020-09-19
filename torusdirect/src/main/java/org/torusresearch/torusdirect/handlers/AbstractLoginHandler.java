@@ -54,11 +54,15 @@ public abstract class AbstractLoginHandler implements ILoginHandler {
     public abstract CompletableFuture<TorusVerifierResponse> getUserInfo(LoginWindowResponse params);
 
     @Override
-    public CompletableFuture<LoginWindowResponse> handleLoginWindow(Context context) {
+    public CompletableFuture<LoginWindowResponse> handleLoginWindow(Context context, boolean isNewActivity) {
         if (StartUpActivity.loginHandler != null && StartUpActivity.loginHandler.get() == null) {
             StartUpActivity.loginHandler.set(this);
         }
-        context.startActivity(new Intent(context, StartUpActivity.class).putExtra(StartUpActivity.URL, finalURL));
+        Intent startupIntent = new Intent(context, StartUpActivity.class).putExtra(StartUpActivity.URL, finalURL);
+        if (isNewActivity) {
+            startupIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+        context.startActivity(startupIntent);
         return loginWindowResponseCompletableFuture;
     }
 }
