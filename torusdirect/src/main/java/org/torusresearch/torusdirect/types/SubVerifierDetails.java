@@ -19,6 +19,10 @@ public class SubVerifierDetails {
         this(typeOfLogin, verifier, clientId, new Auth0ClientOptions.Auth0ClientOptionsBuilder("").build(), false);
     }
 
+    public SubVerifierDetails(LoginType typeOfLogin, String verifier, String clientId, Auth0ClientOptions jwtParams) {
+        this(typeOfLogin, verifier, clientId, jwtParams, false);
+    }
+
     public LoginType getTypeOfLogin() {
         return typeOfLogin;
     }
