@@ -15,7 +15,6 @@ import org.torusresearch.torusdirect.types.SubVerifierDetails;
 import org.torusresearch.torusdirect.types.TorusLoginResponse;
 import org.torusresearch.torusdirect.types.TorusNetwork;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,9 +36,9 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(MainActivity.class.getSimpleName(), "Private Key: " + torusLoginResponse.getPrivateKey());
                 Log.d(MainActivity.class.getSimpleName(), "Public Address: " + torusLoginResponse.getPublicAddress());
                 runOnUiThread(() -> ((TextView) findViewById(R.id.output)).setText("Private Key: " + torusLoginResponse.getPrivateKey() + "\n" + "Public Address: " + torusLoginResponse.getPublicAddress()));
-            } catch (ExecutionException | InterruptedException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-                runOnUiThread(() -> ((TextView) findViewById(R.id.output)).setText("Something went wrong."));
+                runOnUiThread(() -> ((TextView) findViewById(R.id.output)).setText("Something went wrong. " + e.getMessage()));
             }
         });
     }

@@ -38,10 +38,14 @@ public abstract class AbstractLoginHandler implements ILoginHandler {
 
     @Override
     public void setResponse(String response) {
-        LoginWindowResponse loginWindowResponse = new LoginWindowResponse();
-        loginWindowResponse.parseResponse(response);
-        Log.d(AbstractLoginHandler.class.getSimpleName(), loginWindowResponse.toString());
-        loginWindowResponseCompletableFuture.complete(loginWindowResponse);
+        if (response != null) {
+            LoginWindowResponse loginWindowResponse = new LoginWindowResponse();
+            loginWindowResponse.parseResponse(response);
+            Log.d(AbstractLoginHandler.class.getSimpleName(), loginWindowResponse.toString());
+            loginWindowResponseCompletableFuture.complete(loginWindowResponse);
+        } else {
+            loginWindowResponseCompletableFuture.completeExceptionally(new Exception("User closed custom tabs"));
+        }
     }
 
     public String getFinalURL() {

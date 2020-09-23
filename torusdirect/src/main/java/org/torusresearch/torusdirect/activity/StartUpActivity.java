@@ -37,8 +37,8 @@ public class StartUpActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(!isLoginStep.get()) {
-            finish();
+        if (!isLoginStep.get()) {
+            setResponse(null);
         } else {
             isLoginStep.set(false);
         }
@@ -46,14 +46,21 @@ public class StartUpActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
+        // This is hit because of capturing the redirected url
         super.onNewIntent(intent);
         if (intent != null && intent.getData() != null) {
             Log.d("result:torus", Objects.requireNonNull(intent.getData()).toString());
-            if (loginHandler != null && loginHandler.get() != null) {
-                loginHandler.get().setResponse(intent.getData().toString());
-                loginHandler.set(null);
-                finish();
-            }
+            setResponse(intent.getData().toString());
+        } else {
+            setResponse(null);
         }
+    }
+
+    private void setResponse(String response) {
+        if (loginHandler != null && loginHandler.get() != null) {
+            loginHandler.get().setResponse(response);
+            loginHandler.set(null);
+        }
+        finish();
     }
 }
