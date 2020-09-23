@@ -174,7 +174,7 @@ public class Auth0ClientOptions {
         private String scope;
         private String audience;
         private String connection;
-        private HashMap<String, String> additionalParams;
+        private HashMap<String, String> additionalParams = new HashMap<>();
 
         public Auth0ClientOptionsBuilder(String domain) {
             this.domain = domain;
