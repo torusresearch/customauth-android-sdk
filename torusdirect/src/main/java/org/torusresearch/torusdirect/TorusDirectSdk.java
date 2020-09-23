@@ -58,7 +58,7 @@ public class TorusDirectSdk {
                 this.directSdkArgs.getRedirectUri(), subVerifierDetails.getTypeOfLogin(), this.directSdkArgs.getBrowserRedirectUri(), subVerifierDetails.getJwtParams()));
         AtomicReference<LoginWindowResponse> loginWindowResponseAtomicReference = new AtomicReference<>();
         AtomicReference<TorusVerifierResponse> torusVerifierResponseAtomicReference = new AtomicReference<>();
-        return handler.handleLoginWindow(context).thenComposeAsync(loginWindowResponse -> {
+        return handler.handleLoginWindow(context, subVerifierDetails.getIsNewActivity()).thenComposeAsync(loginWindowResponse -> {
             loginWindowResponseAtomicReference.set(loginWindowResponse);
             return handler.getUserInfo(loginWindowResponse);
         }).thenComposeAsync(userInfo -> {
@@ -89,7 +89,7 @@ public class TorusDirectSdk {
         for (SubVerifierDetails subVerifierDetails : subVerifierDetailsArray) {
             ILoginHandler handler = HandlerFactory.createHandler(new CreateHandlerParams(subVerifierDetails.getClientId(), subVerifierDetails.getVerifier(),
                     this.directSdkArgs.getRedirectUri(), subVerifierDetails.getTypeOfLogin(), this.directSdkArgs.getBrowserRedirectUri(), subVerifierDetails.getJwtParams()));
-            LoginWindowResponse loginParams = handler.handleLoginWindow(this.context).join();
+            LoginWindowResponse loginParams = handler.handleLoginWindow(this.context, subVerifierDetails.getIsNewActivity()).join();
             userInfoPromises.add(handler.getUserInfo(loginParams));
             loginParamsArray.add(loginParams);
         }

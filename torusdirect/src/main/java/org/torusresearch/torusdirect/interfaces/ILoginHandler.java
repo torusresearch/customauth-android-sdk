@@ -10,7 +10,7 @@ import java8.util.concurrent.CompletableFuture;
 public interface ILoginHandler {
     CompletableFuture<TorusVerifierResponse> getUserInfo(LoginWindowResponse params);
 
-    CompletableFuture<LoginWindowResponse> handleLoginWindow(Context context);
+    CompletableFuture<LoginWindowResponse> handleLoginWindow(Context context, boolean isNewActivity);
 
     void setResponse(String response);
 
