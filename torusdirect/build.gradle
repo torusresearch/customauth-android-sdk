@@ -40,9 +40,9 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     //noinspection GradleDependency
     api 'org.web3j:crypto:4.6.0-android'
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.6.2"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.6.2"
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }

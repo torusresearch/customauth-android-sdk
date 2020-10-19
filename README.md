@@ -36,7 +36,20 @@ To allow your web app to retrieve keys:
 2. At verifier's interface (where you obtain client id), please use `browserRedirectUri` in DirectSdkArgs (default: 'https://scripts.toruswallet.io/redirect.html')
  as the redirect uri. If you specify a custom `browserRedirectUri`, pls host [redirect.html](torusdirect/src/main/java/org/torusresearch/torusdirect/activity/redirect.html) at that url.
  
-3. Register the startup activity in the manifest file
+3. 
+
+Register the startup activity in the manifest file
+
+using manifest placeholder in build.gradle file (when a custom scheme is used)
+
+```groovy
+android.defaultConfig.manifestPlaceholders = [
+        'torusRedirectScheme': 'YOUR_APP_SCHEME', // (torusapp)
+        'torusRedirectHost': 'YOUR_APP_HOST', // (org.torusresearch.torusdirectandroid)
+        'torusRedirectPathPrefix': 'YOUR_REDIRECT_PATH' // (/redirect)
+]
+```
+or
 
 ```xml
 <activity android:name="org.torusresearch.torusdirect.activity.StartUpActivity"
