@@ -3,8 +3,8 @@ package org.torusresearch.torusdirect.types;
 public class DirectSdkArgs {
     // Android package redirect uri
     private final String redirectUri;
-    private final TorusNetwork network;
-    private final String proxyContractAddress;
+    private TorusNetwork network;
+    private String proxyContractAddress;
     private String browserRedirectUri;
 
     public DirectSdkArgs(String _redirectUri, TorusNetwork network, String proxyContractAddress) {
@@ -30,11 +30,23 @@ public class DirectSdkArgs {
         return network;
     }
 
+    public void setNetwork(TorusNetwork network) {
+        this.network = network;
+    }
+
     public String getProxyContractAddress() {
         return proxyContractAddress;
     }
 
+    public void setProxyContractAddress(String proxyContractAddress) {
+        this.proxyContractAddress = proxyContractAddress;
+    }
+
     public String getBrowserRedirectUri() {
         return browserRedirectUri;
+    }
+
+    public void setBrowserRedirectUri(String browserRedirectUri) {
+        this.browserRedirectUri = browserRedirectUri;
     }
 }
