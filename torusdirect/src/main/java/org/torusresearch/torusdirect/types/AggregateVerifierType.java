@@ -2,17 +2,32 @@ package org.torusresearch.torusdirect.types;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum AggregateVerifierType {
     SINGLE_VERIFIER_ID("single_verifier_id");
 
-    private String verifierType;
+    private static final Map<String, AggregateVerifierType> BY_LABEL = new HashMap<>();
 
-    AggregateVerifierType(String verifierType) {
-        this.verifierType = verifierType;
+    static {
+        for (AggregateVerifierType e : values()) {
+            BY_LABEL.put(e.label, e);
+        }
+    }
+
+    private String label;
+
+    AggregateVerifierType(String label) {
+        this.label = label;
+    }
+
+    public static AggregateVerifierType valueOfLabel(String label) {
+        return BY_LABEL.get(label);
     }
 
     @NotNull
     public String toString() {
-        return verifierType;
+        return label;
     }
 }
