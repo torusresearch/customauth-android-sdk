@@ -2,6 +2,9 @@ package org.torusresearch.torusdirect.types;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum LoginType {
     GOOGLE("google"),
     FACEBOOK("facebook"),
@@ -16,14 +19,26 @@ public enum LoginType {
     LINE("line"),
     EMAIL_PASSWORD("email_password"),
     JWT("jwt");
-    private String loginType;
+    private static final Map<String, LoginType> BY_LABEL = new HashMap<>();
 
-    LoginType(String loginType) {
-        this.loginType = loginType;
+    static {
+        for (LoginType e : values()) {
+            BY_LABEL.put(e.label, e);
+        }
+    }
+
+    private String label;
+
+    LoginType(String label) {
+        this.label = label;
+    }
+
+    public static LoginType valueOfLabel(String label) {
+        return BY_LABEL.get(label);
     }
 
     @NotNull
     public String toString() {
-        return loginType;
+        return label;
     }
 }
