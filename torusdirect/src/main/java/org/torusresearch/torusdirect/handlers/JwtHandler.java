@@ -114,7 +114,7 @@ public class JwtHandler extends AbstractLoginHandler {
         String idToken = params.getIdToken();
         String domain = this.params.getJwtParams().getDomain();
         String verifierIdField = this.params.getJwtParams().getVerifierIdField();
-        Boolean isVerifierIdCaseSensitive = this.params.getJwtParams().getVerifierIdCaseSensitive();
+        boolean isVerifierIdCaseSensitive = this.params.getJwtParams().getVerifierIdCaseSensitive();
         LoginType typeOfLogin = this.params.getTypeOfLogin();
         HttpUrl.Builder userInfoUrl = new HttpUrl.Builder().scheme("https").host(domain).addPathSegments("userinfo");
         return HttpHelpers.get(userInfoUrl.toString(), new Header[]{

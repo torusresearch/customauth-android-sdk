@@ -62,11 +62,11 @@ public class Helpers {
         return new String(newCodePoints, 0, outOffset);
     }
 
-    public static String caseSensitiveField(String field, Boolean isCaseSensitive) {
+    public static String caseSensitiveField(String field, boolean isCaseSensitive) {
         return isCaseSensitive ? field : field.toLowerCase();
     }
 
-    public static String getVerifierId(JwtUserInfoResult userInfo, LoginType typeOfLogin, String verifierIdField, Boolean isVerifierIdCaseSensitive) {
+    public static String getVerifierId(JwtUserInfoResult userInfo, LoginType typeOfLogin, String verifierIdField, boolean isVerifierIdCaseSensitive) {
         String name = userInfo.getName();
         String sub = userInfo.getSub();
         if (!isEmpty(verifierIdField)) {

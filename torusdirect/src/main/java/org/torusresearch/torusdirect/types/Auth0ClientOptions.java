@@ -11,7 +11,7 @@ public class Auth0ClientOptions {
     private String client_id;
     private String leeway;
     private String verifierIdField;
-    private Boolean isVerifierIdCaseSensitive;
+    private boolean isVerifierIdCaseSensitive;
     private Display display;
     private Prompt prompt;
     private String max_age;
@@ -87,7 +87,7 @@ public class Auth0ClientOptions {
         return verifierIdField;
     }
 
-    public Boolean getVerifierIdCaseSensitive() {
+    public boolean getVerifierIdCaseSensitive() {
         return isVerifierIdCaseSensitive;
     }
 
@@ -141,7 +141,7 @@ public class Auth0ClientOptions {
         this.client_id = Helpers.mergeValue(this.client_id, options.getClient_id());
         this.leeway = Helpers.mergeValue(this.leeway, options.getLeeway());
         this.verifierIdField = Helpers.mergeValue(this.verifierIdField, options.getVerifierIdField());
-        this.isVerifierIdCaseSensitive = Helpers.mergeValue(this.isVerifierIdCaseSensitive, options.getVerifierIdCaseSensitive());
+        this.isVerifierIdCaseSensitive = options.getVerifierIdCaseSensitive();
         this.display = Helpers.mergeValue(this.display, options.getDisplay());
         this.prompt = Helpers.mergeValue(this.prompt, options.getPrompt());
         this.max_age = Helpers.mergeValue(this.max_age, options.getMax_age());
@@ -163,7 +163,7 @@ public class Auth0ClientOptions {
         private String client_id;
         private String leeway;
         private String verifierIdField;
-        private Boolean isVerifierIdCaseSensitive = true;
+        private boolean isVerifierIdCaseSensitive = true;
         private Display display;
         private Prompt prompt;
         private String max_age;
@@ -195,7 +195,7 @@ public class Auth0ClientOptions {
             return this;
         }
 
-        public Auth0ClientOptionsBuilder setVerifierIdCaseSensitive(Boolean verifierIdCaseSensitive) {
+        public Auth0ClientOptionsBuilder setVerifierIdCaseSensitive(boolean verifierIdCaseSensitive) {
             this.isVerifierIdCaseSensitive = verifierIdCaseSensitive;
             return this;
         }
