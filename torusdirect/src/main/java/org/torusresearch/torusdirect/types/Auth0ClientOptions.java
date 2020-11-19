@@ -22,7 +22,7 @@ public class Auth0ClientOptions {
     private String scope;
     private String audience;
     private String connection;
-    private HashMap<String, String> additionalParams;
+    private final HashMap<String, String> additionalParams;
     // internal
     private String state;
     private String response_type;
@@ -158,12 +158,12 @@ public class Auth0ClientOptions {
 
     public static class Auth0ClientOptionsBuilder {
         // required
-        private String domain;
+        private final String domain;
         // optional
         private String client_id;
         private String leeway;
         private String verifierIdField;
-        private Boolean isVerifierIdCaseSensitive;
+        private Boolean isVerifierIdCaseSensitive = true;
         private Display display;
         private Prompt prompt;
         private String max_age;

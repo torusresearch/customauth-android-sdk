@@ -105,6 +105,7 @@ public class JwtHandler extends AbstractLoginHandler {
             finalUrl.addQueryParameter(entry.getKey(), entry.getValue());
         }
         this.finalURL = finalUrl.build().toString();
+        System.out.println(this.finalURL);
     }
 
     @Override

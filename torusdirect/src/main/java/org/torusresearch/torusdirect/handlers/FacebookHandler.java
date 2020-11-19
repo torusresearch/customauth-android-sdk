@@ -97,7 +97,7 @@ public class FacebookHandler extends AbstractLoginHandler {
             Gson gson = new Gson();
             FacebookUserInfoResult result = gson.fromJson(resp, FacebookUserInfoResult.class);
             return CompletableFuture.supplyAsync(() -> new TorusVerifierResponse(result.getEmail(), result.getName(),
-                    result.getPicture().getData().getUrl(), this.params.getVerifier(), result.getEmail().toLowerCase(), this.params.getTypeOfLogin()));
+                    result.getPicture().getData().getUrl(), this.params.getVerifier(), result.getId().toLowerCase(), this.params.getTypeOfLogin()));
         });
 
     }

@@ -3,13 +3,13 @@ package org.torusresearch.torusdirectandroid;
 import org.torusresearch.torusdirect.types.LoginType;
 
 public class LoginVerifier {
-    private String name;
-    private LoginType typeOfLogin;
-    private String clientId;
-    private String verifier;
+    private final String name;
+    private final LoginType typeOfLogin;
+    private final String clientId;
+    private final String verifier;
     private String domain;
     private String verifierIdField;
-    private boolean isVerfierIdCaseSensitive;
+    private boolean isVerfierIdCaseSensitive = true;
 
     public LoginVerifier(String name, LoginType typeOfLogin, String clientId, String verifier) {
         this.name = name;
