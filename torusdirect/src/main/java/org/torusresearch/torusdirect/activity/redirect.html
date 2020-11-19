@@ -28,12 +28,22 @@
         flex-direction: column;
       }
 
-      h1.title {
+      div.title {
         font-size: 14px;
         color: #0f1222;
         font-family: "Roboto", sans-serif !important;
         margin: 0;
         text-align: center;
+        font-weight: normal;
+      }
+
+      div.title a{
+        color: #0364ff;
+        cursor: pointer;
+      }
+
+      div.title > div{
+        margin-bottom: 4px;
       }
 
       .spinner .beat {
@@ -90,7 +100,7 @@
       }
 
       @media (min-width: 768px) {
-        h1.title {
+        div.title {
           font-size: 14px;
         }
         p.info {
@@ -102,12 +112,6 @@
           width: 12px;
         }
       }
-
-
-
-
-
-
     </style>
 </head>
 
@@ -118,11 +122,15 @@
         <div class="beat beat-even"></div>
         <div class="beat beat-odd"></div>
     </div>
-    <a id="navigateLink" style="display: none;">Click here</a>
+    <div class="title content" id="redirectText" style="display: block;">
+      <div>Something happened, we are unable to load the page.</div>
+      <div><a id="navigateLink">Click here</a> to continue with your login</div>      
+    </div>
 </div>
 <script>
         document.getElementById("message").style.visibility = "visible";
         var navigateLink = document.getElementById("navigateLink");
+        var redirectText = document.getElementById("redirectText");
         var linkToNavigate;
         var instanceParams = {};
         try {
@@ -158,7 +166,7 @@
             window.location.href = linkToNavigate;
             setTimeout(() => {
               navigateLink.href = linkToNavigate;
-              navigateLink.style.display = "block";
+              redirectText.style.display = "block";
             }, 1000)
           }
         } catch (err) {
