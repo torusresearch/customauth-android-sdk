@@ -106,6 +106,8 @@
 
 
 
+
+
     </style>
 </head>
 
@@ -116,11 +118,12 @@
         <div class="beat beat-even"></div>
         <div class="beat beat-odd"></div>
     </div>
-    <h1 class="title content" id="closeText" style="display: none;">You can close this window
-        now</h1>
+    <a id="navigateLink" style="display: none;">Click here</a>
 </div>
 <script>
         document.getElementById("message").style.visibility = "visible";
+        var navigateLink = document.getElementById("navigateLink");
+        var linkToNavigate;
         var instanceParams = {};
         try {
           var url = new URL(location.href);
@@ -151,14 +154,17 @@
           }
           if (instanceParams.redirectToAndroid) {
             // communicate to android package
-            window.location.href = instanceParams.redirectUri + location.search + location.hash;
+            linkToNavigate = instanceParams.redirectUri + location.search + location.hash;
+            window.location.href = linkToNavigate;
+            setTimeout(() => {
+              navigateLink.href = linkToNavigate;
+              navigateLink.style.display = "block";
+            }, 1000)
           }
         } catch (err) {
           console.error(err, "error in redirect");
           window.close();
         }
-
-
 
 
 </script>
