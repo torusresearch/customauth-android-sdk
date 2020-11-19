@@ -11,8 +11,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.gson.Gson;
-
 import org.torusresearch.torusdirect.TorusDirectSdk;
 import org.torusresearch.torusdirect.types.Auth0ClientOptions;
 import org.torusresearch.torusdirect.types.DirectSdkArgs;
@@ -29,7 +27,7 @@ import java.util.concurrent.ForkJoinPool;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private HashMap<String, LoginVerifier> verifierMap = new HashMap<String, LoginVerifier>() {
+    private final HashMap<String, LoginVerifier> verifierMap = new HashMap<String, LoginVerifier>() {
         {
             put("google", new LoginVerifier("Google", LoginType.GOOGLE, "221898609709-obfn3p63741l5333093430j3qeiinaa8.apps.googleusercontent.com", "google-lrc"));
             put("facebook", new LoginVerifier("Facebook", LoginType.FACEBOOK, "617201755556395", "facebook-lrc"));
@@ -56,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
         DirectSdkArgs args = new DirectSdkArgs("torusapp://org.torusresearch.torusdirectandroid/redirect", TorusNetwork.TESTNET, "0x4023d2a0D330bF11426B12C6144Cfb96B7fa6183");
         this.torusSdk = new TorusDirectSdk(args, this);
-        Spinner spinner = (Spinner) findViewById(R.id.verifierList);
+        Spinner spinner = findViewById(R.id.verifierList);
         List<LoginVerifier> loginVerifierList = new ArrayList<>(verifierMap.values());
         ArrayAdapter<LoginVerifier> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, loginVerifierList);
         spinner.setAdapter(adapter);
@@ -85,8 +83,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             this.selectedLoginVerifier.getClientId(), builder.build())).get();
                 }
 
-                Gson gson = new Gson();
-                String json = gson.toJson(torusLoginResponse);
+//                Gson gson = new Gson();
+//                String json = gson.toJson(torusLoginResponse);
+                String json = torusLoginResponse.getPublicAddress();
                 Log.d(MainActivity.class.getSimpleName(), json);
                 runOnUiThread(() -> ((TextView) findViewById(R.id.output)).setText(json));
             } catch (Exception e) {
