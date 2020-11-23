@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum AggregateVerifierType {
-    SINGLE_VERIFIER_ID("single_verifier_id");
+    SINGLE_VERIFIER_ID("single_id_verifier");
 
     private static final Map<String, AggregateVerifierType> BY_LABEL = new HashMap<>();
 
@@ -16,7 +16,7 @@ public enum AggregateVerifierType {
         }
     }
 
-    private String label;
+    private final String label;
 
     AggregateVerifierType(String label) {
         this.label = label;
