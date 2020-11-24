@@ -82,10 +82,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             this.selectedLoginVerifier.getVerifier(),
                             this.selectedLoginVerifier.getClientId(), builder.build())).get();
                 }
+//                TorusAggregateLoginResponse torusAggregateLoginResponse;
+//                torusAggregateLoginResponse = this.torusSdk.triggerAggregateLogin(new AggregateLoginParams(AggregateVerifierType.SINGLE_VERIFIER_ID, "google-auth0-gooddollar", new SubVerifierDetails[]{
+//                        new SubVerifierDetails(LoginType.GOOGLE, "google-shubs", "1015336103925-reqktqs0ns9vfaeh7nbt8mi634u9157k.apps.googleusercontent.com")
+//                })).get();
 
 //                Gson gson = new Gson();
 //                String json = gson.toJson(torusLoginResponse);
                 String json = torusLoginResponse.getPublicAddress();
+//                String json = torusAggregateLoginResponse.getPublicAddress();
                 Log.d(MainActivity.class.getSimpleName(), json);
                 runOnUiThread(() -> ((TextView) findViewById(R.id.output)).setText(json));
             } catch (Exception e) {

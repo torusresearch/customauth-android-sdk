@@ -109,7 +109,8 @@ public class TorusDirectSdk {
             aggregateVerifierId = userInfo.getVerifierId();
         }
         Collections.sort(aggregateIdTokenSeeds);
-        String aggregateIdToken = Hash.sha3(String.join(Character.toString((char) 29), aggregateIdTokenSeeds));
+        String aggregateTokenString = String.join(Character.toString((char) 29), aggregateIdTokenSeeds);
+        String aggregateIdToken = Hash.sha3String(aggregateTokenString).substring(2);
         aggregateVerifierParams.setVerifier_id(aggregateVerifierId);
         HashMap<String, Object> aggregateVerifierParamsHashMap = new HashMap<>();
         aggregateVerifierParamsHashMap.put("verify_params", aggregateVerifierParams.getVerify_params());
