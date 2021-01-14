@@ -52,7 +52,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        DirectSdkArgs args = new DirectSdkArgs("torusapp://org.torusresearch.torusdirectandroid/redirect", TorusNetwork.TESTNET, "0x4023d2a0D330bF11426B12C6144Cfb96B7fa6183");
+        // Use this if your OAuth provider supports deep links
+        // DirectSdkArgs args = new DirectSdkArgs("torusapp://org.torusresearch.torusdirectandroid/redirect", TorusNetwork.TESTNET);
+        // If not, use this (Please host your own script from your own domain
+        DirectSdkArgs args = new DirectSdkArgs("torusapp://org.torusresearch.torusdirectandroid/redirect", TorusNetwork.TESTNET, "https://scripts.toruswallet.io/redirect.html");
         this.torusSdk = new TorusDirectSdk(args, this);
         Spinner spinner = findViewById(R.id.verifierList);
         List<LoginVerifier> loginVerifierList = new ArrayList<>(verifierMap.values());
