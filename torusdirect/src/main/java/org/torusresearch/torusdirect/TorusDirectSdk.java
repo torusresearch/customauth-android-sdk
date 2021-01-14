@@ -36,7 +36,6 @@ import java.util.stream.Collectors;
 
 import java8.util.concurrent.CompletableFuture;
 
-
 public class TorusDirectSdk {
     private final DirectSdkArgs directSdkArgs;
     private final FetchNodeDetails nodeDetailManager;
@@ -47,7 +46,7 @@ public class TorusDirectSdk {
         this.directSdkArgs = _directSdkArgs;
         this.nodeDetailManager = new FetchNodeDetails(this.directSdkArgs.getNetwork() == TorusNetwork.TESTNET ? EthereumNetwork.ROPSTEN : EthereumNetwork.MAINNET,
                 this.directSdkArgs.getProxyContractAddress());
-        this.torusUtils = new TorusUtils();
+        this.torusUtils = new TorusUtils(context.getPackageName());
         this.context = context;
         // maybe do this for caching
         this.nodeDetailManager.getNodeDetails().thenRun(() -> System.out.println("Fetched Node Details"));

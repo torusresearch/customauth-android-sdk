@@ -10,7 +10,7 @@ import java.security.InvalidParameterException;
 public class HandlerFactory {
     public static ILoginHandler createHandler(CreateHandlerParams params) throws InvalidParameterException {
         LoginType typeOfLogin = params.getTypeOfLogin();
-        if (Helpers.isEmpty(params.getClientId()) || Helpers.isEmpty(params.getVerifier()) || Helpers.isEmpty(params.getRedirect_uri())) {
+        if (Helpers.isEmpty(params.getClientId()) || Helpers.isEmpty(params.getVerifier()) || Helpers.isEmpty(params.getBrowserRedirectUri())) {
             throw new InvalidParameterException("Invalid Params");
         }
         String domain = params.getJwtParams().getDomain();

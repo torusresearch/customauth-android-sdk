@@ -33,14 +33,14 @@ To allow your web app to retrieve keys:
 
 1. Install the package
 
-2. At verifier's interface (where you obtain client id), please use `browserRedirectUri` in DirectSdkArgs (default: 'https://scripts.toruswallet.io/redirect.html')
- as the redirect uri. If you specify a custom `browserRedirectUri`, pls host [redirect.html](torusdirect/src/main/java/org/torusresearch/torusdirect/activity/redirect.html) at that url.
- 
-3. 
+2. At verifier's interface (where you obtain client id), please use `browserRedirectUri` in DirectSdkArgs as the redirect uri. 
+e.g: browserRedirectUri can be `YOUR_APP_DEEP_LINK` if the OAuth provider supports it. else, follow the next step
+If you specify a custom `browserRedirectUri` or OAuth provider doesn't support deep link url, 
+pls host [redirect.html](torusdirect/src/main/java/org/torusresearch/torusdirect/activity/redirect.html) at that `browserRedirectUri` 
+after replacing `YOUR_APP_DEEP_LINK` in [redirect.html](torusdirect/src/main/java/org/torusresearch/torusdirect/activity/redirect.html) with the scheme specified in manifestPlaceHolders
+and pass in `redirectUri` as the `YOUR_APP_DEEP_LINK`
 
-Register the startup activity in the manifest file
-
-using manifest placeholder in build.gradle file (when a custom scheme is used)
+3. Register the startup activity in the manifest file using manifest placeholder in build.gradle file (when a custom scheme is used)
 
 ```groovy
 android.defaultConfig.manifestPlaceholders = [
@@ -66,11 +66,11 @@ or
 </activity>
 ```
 
-3. Instantiate the package with your own specific client-id and redirect uri as `YOUR_APP_SCHEME://YOUR_APP_HOST/YOUR_REDIRECT_PATH` (eg:`torusapp://org.torusresearch.torusdirectandroid/redirect`)
+4. Instantiate the package with your own specific client-id and browserRedirectUri as `YOUR_APP_SCHEME://YOUR_APP_HOST/YOUR_REDIRECT_PATH` (eg:`torusapp://org.torusresearch.torusdirectandroid/redirect`)
 
-4. Trigger the login
+5. Trigger the login
 
-5. Reach out to hello@tor.us to get your verifier spun up on the testnet today!
+6. Reach out to hello@tor.us to get your verifier spun up on the testnet today!
 
 ## Examples
 
