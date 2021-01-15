@@ -22,7 +22,8 @@ import org.torusresearch.torusdirect.types.TorusNetwork;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ForkJoinPool;
+
+import java8.util.concurrent.CompletableFuture;
 
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -53,9 +54,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // Use this if your OAuth provider supports deep links
-        // DirectSdkArgs args = new DirectSdkArgs("torusapp://org.torusresearch.torusdirectandroid/redirect", TorusNetwork.TESTNET);
+        DirectSdkArgs args = new DirectSdkArgs("torusapp://org.torusresearch.torusdirectandroid/redirect", TorusNetwork.TESTNET);
         // If not, use this (Please host your own script from your own domain
-        DirectSdkArgs args = new DirectSdkArgs("torusapp://org.torusresearch.torusdirectandroid/redirect", TorusNetwork.TESTNET, "https://scripts.toruswallet.io/redirect.html");
+//        DirectSdkArgs args = new DirectSdkArgs("torusapp://org.torusresearch.torusdirectandroid/redirect", TorusNetwork.TESTNET, "https://scripts.toruswallet.io/redirect.html");
         this.torusSdk = new TorusDirectSdk(args, this);
         Spinner spinner = findViewById(R.id.verifierList);
         List<LoginVerifier> loginVerifierList = new ArrayList<>(verifierMap.values());
@@ -66,25 +67,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @SuppressLint("SetTextI18n")
     public void launch(View view) {
-        ForkJoinPool.commonPool().submit(() -> {
-            try {
-                Log.d("result:selecteditem", this.selectedLoginVerifier.toString());
-                Auth0ClientOptions.Auth0ClientOptionsBuilder builder = null;
-                if (this.selectedLoginVerifier.getDomain() != null) {
-                    builder = new Auth0ClientOptions.Auth0ClientOptionsBuilder(this.selectedLoginVerifier.getDomain());
-                    builder.setVerifierIdField(this.selectedLoginVerifier.getVerifierIdField());
-                    builder.setVerifierIdCaseSensitive(this.selectedLoginVerifier.isVerfierIdCaseSensitive());
-                }
-                TorusLoginResponse torusLoginResponse;
-                if (builder == null) {
-                    torusLoginResponse = this.torusSdk.triggerLogin(new SubVerifierDetails(this.selectedLoginVerifier.getTypeOfLogin(),
-                            this.selectedLoginVerifier.getVerifier(),
-                            this.selectedLoginVerifier.getClientId())).get();
-                } else {
-                    torusLoginResponse = this.torusSdk.triggerLogin(new SubVerifierDetails(this.selectedLoginVerifier.getTypeOfLogin(),
-                            this.selectedLoginVerifier.getVerifier(),
-                            this.selectedLoginVerifier.getClientId(), builder.build())).get();
-                }
+        Log.d("result:selecteditem", this.selectedLoginVerifier.toString());
+        Auth0ClientOptions.Auth0ClientOptionsBuilder builder = null;
+        if (this.selectedLoginVerifier.getDomain() != null) {
+            builder = new Auth0ClientOptions.Auth0ClientOptionsBuilder(this.selectedLoginVerifier.getDomain());
+            builder.setVerifierIdField(this.selectedLoginVerifier.getVerifierIdField());
+            builder.setVerifierIdCaseSensitive(this.selectedLoginVerifier.isVerfierIdCaseSensitive());
+        }
+        CompletableFuture<TorusLoginResponse> torusLoginResponseCf;
+        if (builder == null) {
+            torusLoginResponseCf = this.torusSdk.triggerLogin(new SubVerifierDetails(this.selectedLoginVerifier.getTypeOfLogin(),
+                    this.selectedLoginVerifier.getVerifier(),
+                    this.selectedLoginVerifier.getClientId()));
+        } else {
+            torusLoginResponseCf = this.torusSdk.triggerLogin(new SubVerifierDetails(this.selectedLoginVerifier.getTypeOfLogin(),
+                    this.selectedLoginVerifier.getVerifier(),
+                    this.selectedLoginVerifier.getClientId(), builder.build()));
+        }
 //                TorusAggregateLoginResponse torusAggregateLoginResponse;
 //                torusAggregateLoginResponse = this.torusSdk.triggerAggregateLogin(new AggregateLoginParams(AggregateVerifierType.SINGLE_VERIFIER_ID, "google-auth0-gooddollar", new SubVerifierDetails[]{
 //                        new SubVerifierDetails(LoginType.GOOGLE, "google-shubs", "1015336103925-reqktqs0ns9vfaeh7nbt8mi634u9157k.apps.googleusercontent.com")
@@ -92,14 +91,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 //                Gson gson = new Gson();
 //                String json = gson.toJson(torusLoginResponse);
-                String json = torusLoginResponse.getPublicAddress();
+        torusLoginResponseCf.whenComplete((torusLoginResponse, error) -> {
+            String json = torusLoginResponse.getPublicAddress();
 //                String json = torusAggregateLoginResponse.getPublicAddress();
-                Log.d(MainActivity.class.getSimpleName(), json);
-                runOnUiThread(() -> ((TextView) findViewById(R.id.output)).setText(json));
-            } catch (Exception e) {
-                e.printStackTrace();
-                runOnUiThread(() -> ((TextView) findViewById(R.id.output)).setText("Something went wrong. " + e.getMessage()));
-            }
+            Log.d(MainActivity.class.getSimpleName(), json);
+            ((TextView) findViewById(R.id.output)).setText(json);
         });
     }
 
