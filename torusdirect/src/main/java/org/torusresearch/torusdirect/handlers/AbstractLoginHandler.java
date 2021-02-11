@@ -2,6 +2,7 @@ package org.torusresearch.torusdirect.handlers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Base64;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -13,7 +14,6 @@ import org.torusresearch.torusdirect.types.LoginWindowResponse;
 import org.torusresearch.torusdirect.types.State;
 import org.torusresearch.torusdirect.types.TorusVerifierResponse;
 
-import java.util.Base64;
 import java.util.UUID;
 
 import java8.util.concurrent.CompletableFuture;
@@ -22,7 +22,7 @@ public abstract class AbstractLoginHandler implements ILoginHandler {
     protected final String nonce = UUID.randomUUID().toString();
     protected CreateHandlerParams params;
     protected String finalURL;
-    private CompletableFuture<LoginWindowResponse> loginWindowResponseCompletableFuture;
+    private final CompletableFuture<LoginWindowResponse> loginWindowResponseCompletableFuture;
 
     public AbstractLoginHandler(CreateHandlerParams _params) {
         params = _params;
@@ -33,7 +33,7 @@ public abstract class AbstractLoginHandler implements ILoginHandler {
         State localState = new State(this.nonce, this.params.getVerifier(), this.params.getRedirect_uri());
         Gson gson = new Gson();
         String stringifiedState = gson.toJson(localState, State.class);
-        return Base64.getUrlEncoder().encodeToString(stringifiedState.getBytes());
+        return Base64.encodeToString(stringifiedState.getBytes(), Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP);
     }
 
     @Override
