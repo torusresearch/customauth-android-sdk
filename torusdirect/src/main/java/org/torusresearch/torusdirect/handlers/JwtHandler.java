@@ -1,5 +1,7 @@
 package org.torusresearch.torusdirect.handlers;
 
+import android.util.Log;
+
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.gson.Gson;
@@ -105,7 +107,7 @@ public class JwtHandler extends AbstractLoginHandler {
             finalUrl.addQueryParameter(entry.getKey(), entry.getValue());
         }
         this.finalURL = finalUrl.build().toString();
-        System.out.println(this.finalURL);
+        Log.d("finalUrl:torus", this.finalURL);
     }
 
     @Override

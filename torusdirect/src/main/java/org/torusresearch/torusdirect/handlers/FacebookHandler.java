@@ -1,5 +1,7 @@
 package org.torusresearch.torusdirect.handlers;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 
 import org.torusresearch.torusdirect.types.CreateHandlerParams;
@@ -86,6 +88,7 @@ public class FacebookHandler extends AbstractLoginHandler {
         finalUrl.addQueryParameter("scope", this.SCOPE);
         finalUrl.addQueryParameter("redirect_uri", this.params.getBrowserRedirectUri());
         this.finalURL = finalUrl.build().toString();
+        Log.d("finalUrl:torus", this.finalURL);
     }
 
     @Override

@@ -1,6 +1,8 @@
 package org.torusresearch.torusdirect;
 
 import android.content.Context;
+import android.text.TextUtils;
+import android.util.Log;
 
 import org.torusresearch.fetchnodedetails.FetchNodeDetails;
 import org.torusresearch.fetchnodedetails.types.EthereumNetwork;
@@ -32,7 +34,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 import java8.util.concurrent.CompletableFuture;
 
@@ -49,7 +50,7 @@ public class TorusDirectSdk {
         this.torusUtils = new TorusUtils(context.getPackageName());
         this.context = context;
         // maybe do this for caching
-        this.nodeDetailManager.getNodeDetails().thenRun(() -> System.out.println("Fetched Node Details"));
+        this.nodeDetailManager.getNodeDetails().thenRun(() -> Log.d("result:torus:nodedetail", "Fetched Node Details"));
     }
 
     public CompletableFuture<TorusLoginResponse> triggerLogin(SubVerifierDetails subVerifierDetails) {
@@ -92,7 +93,12 @@ public class TorusDirectSdk {
             userInfoPromises.add(handler.getUserInfo(loginParams));
             loginParamsArray.add(loginParams);
         }
-        List<TorusVerifierResponse> userInfoArray = userInfoPromises.stream().map(CompletableFuture::join).collect(Collectors.toList());
+        List<TorusVerifierResponse> userInfoArray = new ArrayList<>();
+        for (CompletableFuture<TorusVerifierResponse> userInfoPromise :
+                userInfoPromises) {
+            userInfoArray.add(userInfoPromise.join());
+        }
+        // userInfoPromises.stream().map(CompletableFuture::join).collect(Collectors.toList())
         AggregateVerifierParams aggregateVerifierParams = new AggregateVerifierParams();
         aggregateVerifierParams.setVerify_params(new AggregateVerifierParams.VerifierParams[subVerifierDetailsArray.length]);
         aggregateVerifierParams.setSub_verifier_ids(new String[subVerifierDetailsArray.length]);
@@ -108,7 +114,7 @@ public class TorusDirectSdk {
             aggregateVerifierId = userInfo.getVerifierId();
         }
         Collections.sort(aggregateIdTokenSeeds);
-        String aggregateTokenString = String.join(Character.toString((char) 29), aggregateIdTokenSeeds);
+        String aggregateTokenString = TextUtils.join(Character.toString((char) 29), aggregateIdTokenSeeds);
         String aggregateIdToken = Hash.sha3String(aggregateTokenString).substring(2);
         aggregateVerifierParams.setVerifier_id(aggregateVerifierId);
         HashMap<String, Object> aggregateVerifierParamsHashMap = new HashMap<>();

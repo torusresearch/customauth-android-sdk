@@ -1,5 +1,7 @@
 package org.torusresearch.torusdirect.handlers;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 
 import org.torusresearch.torusdirect.types.CreateHandlerParams;
@@ -60,6 +62,7 @@ public class GoogleHandler extends AbstractLoginHandler {
         finalUrl.addQueryParameter("nonce", this.nonce);
         finalUrl.addQueryParameter("prompt", this.PROMPT);
         this.finalURL = finalUrl.build().toString();
+        Log.d("finalUrl:torus", this.finalURL);
     }
 
     @Override
