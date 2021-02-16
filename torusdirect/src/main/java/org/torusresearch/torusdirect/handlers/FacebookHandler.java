@@ -42,7 +42,7 @@ final class FacebookUserInfoResult {
         return id;
     }
 
-    public class Picture {
+    public static class Picture {
         private final Data data;
 
         public Picture(Data data) {
@@ -53,7 +53,7 @@ final class FacebookUserInfoResult {
             return data;
         }
 
-        public class Data {
+        public static class Data {
             private final String url;
 
             public Data(String url) {

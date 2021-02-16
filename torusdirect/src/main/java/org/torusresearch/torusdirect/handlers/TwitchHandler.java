@@ -24,7 +24,7 @@ final class TwitchUserInfoResult {
         return data;
     }
 
-    class Data {
+    static class Data {
         private final String profile_image_url;
         private final String display_name;
         private final String email;
