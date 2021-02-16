@@ -159,13 +159,14 @@
           } catch (e) {
             console.error(e);
           }
-        // communicate to android package
-        linkToNavigate = "YOUR_APP_DEEP_LINK" + location.search + location.hash;
-        window.location.href = linkToNavigate;
-        setTimeout(() => {
-          navigateLink.href = linkToNavigate;
-          redirectText.style.display = "block";
-        }, 1000)
+            
+          // communicate to android/ios package
+          linkToNavigate = "<YOUR_APP_DEEP_LINK>" + location.search + location.hash;
+          window.location.href = linkToNavigate;
+          setTimeout(() => {
+            navigateLink.href = linkToNavigate;
+            redirectText.style.display = "block";
+          }, 1000)
         } catch (err) {
           console.error(err, "error in redirect");
           window.close();
