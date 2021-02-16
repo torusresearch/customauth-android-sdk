@@ -165,7 +165,7 @@
 
         // communicate to android/ios package
         if (whiteListedURLs.includes(instanceParams.redirectUri)) {
-            linkToNavigate = instanceParams.redirectUri + location.search + location.hash;r
+            linkToNavigate = instanceParams.redirectUri + location.search + location.hash;
             window.location.href = linkToNavigate;
             setTimeout(() => {
                 navigateLink.href = linkToNavigate;
