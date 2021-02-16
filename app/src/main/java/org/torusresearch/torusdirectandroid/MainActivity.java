@@ -92,10 +92,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 //                Gson gson = new Gson();
 //                String json = gson.toJson(torusLoginResponse);
         torusLoginResponseCf.whenComplete((torusLoginResponse, error) -> {
-            String json = torusLoginResponse.getPublicAddress();
+            if (error != null) {
+                ((TextView) findViewById(R.id.output)).setText("Something went wrong " + error.getMessage());
+            } else {
+                String json = torusLoginResponse.getPublicAddress();
 //                String json = torusAggregateLoginResponse.getPublicAddress();
-            Log.d(MainActivity.class.getSimpleName(), json);
-            ((TextView) findViewById(R.id.output)).setText(json);
+                Log.d(MainActivity.class.getSimpleName(), json);
+                ((TextView) findViewById(R.id.output)).setText(json);
+            }
         });
     }
 
