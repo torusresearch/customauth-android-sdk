@@ -37,8 +37,8 @@ To allow your web app to retrieve keys:
 e.g: browserRedirectUri can be `YOUR_APP_DEEP_LINK` if the OAuth provider supports it. else, follow the next step
 If you specify a custom `browserRedirectUri` or OAuth provider doesn't support deep link url, 
 pls host [redirect.html](torusdirect/src/main/java/org/torusresearch/torusdirect/activity/redirect.html) at that `browserRedirectUri` 
-after replacing `YOUR_APP_DEEP_LINK` in [redirect.html](torusdirect/src/main/java/org/torusresearch/torusdirect/activity/redirect.html) with the scheme specified in manifestPlaceHolders
-and pass in `redirectUri` as the `YOUR_APP_DEEP_LINK`
+after editing `whiteListedURLs` in [redirect.html](torusdirect/src/main/java/org/torusresearch/torusdirect/activity/redirect.html) with the scheme specified in manifestPlaceHolders
+and pass in as `redirectUri`.
 
 3. Register the startup activity in the manifest file using manifest placeholder in build.gradle file (when a custom scheme is used)
 
