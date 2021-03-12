@@ -20,6 +20,7 @@ import org.torusresearch.torusdirect.types.TorusAggregateLoginResponse;
 import org.torusresearch.torusdirect.types.TorusKey;
 import org.torusresearch.torusdirect.types.TorusLoginResponse;
 import org.torusresearch.torusdirect.types.TorusNetwork;
+import org.torusresearch.torusdirect.types.TorusSubVerifierInfo;
 import org.torusresearch.torusdirect.types.TorusVerifierResponse;
 import org.torusresearch.torusdirect.types.TorusVerifierUnionResponse;
 import org.torusresearch.torusdirect.utils.Helpers;
@@ -157,5 +158,30 @@ public class TorusDirectSdk {
                 return null;
             return new TorusKey(shareResponse.getPrivKey(), shareResponse.getEthAddress());
         });
+    }
+
+    public CompletableFuture<TorusKey> getAggregateTorusKey(String verifier, String verifierId, TorusSubVerifierInfo[] subVerifierInfoArray) {
+        AggregateVerifierParams aggregateVerifierParams = new AggregateVerifierParams();
+        aggregateVerifierParams.setVerify_params(new AggregateVerifierParams.VerifierParams[subVerifierInfoArray.length]);
+        aggregateVerifierParams.setSub_verifier_ids(new String[subVerifierInfoArray.length]);
+        List<String> aggregateIdTokenSeeds = new ArrayList<>();
+        String aggregateVerifierId = "";
+        for (int i = 0; i < subVerifierInfoArray.length; i++) {
+            TorusSubVerifierInfo userInfo = subVerifierInfoArray[i];
+            String finalToken = userInfo.getIdToken();
+            aggregateVerifierParams.setVerifyParamItem(new AggregateVerifierParams.VerifierParams(verifierId, finalToken), i);
+            aggregateVerifierParams.setSubVerifierIdItem(userInfo.getVerifier(), i);
+            aggregateIdTokenSeeds.add(finalToken);
+            aggregateVerifierId = verifierId;
+        }
+        Collections.sort(aggregateIdTokenSeeds);
+        String aggregateTokenString = TextUtils.join(Character.toString((char) 29), aggregateIdTokenSeeds);
+        String aggregateIdToken = Hash.sha3String(aggregateTokenString).substring(2);
+        aggregateVerifierParams.setVerifier_id(aggregateVerifierId);
+        HashMap<String, Object> aggregateVerifierParamsHashMap = new HashMap<>();
+        aggregateVerifierParamsHashMap.put("verify_params", aggregateVerifierParams.getVerify_params());
+        aggregateVerifierParamsHashMap.put("sub_verifier_ids", aggregateVerifierParams.getSub_verifier_ids());
+        aggregateVerifierParamsHashMap.put("verifier_id", aggregateVerifierParams.getVerifier_id());
+        return this.getTorusKey(verifier, aggregateVerifierId, aggregateVerifierParamsHashMap, aggregateIdToken);
     }
 }
