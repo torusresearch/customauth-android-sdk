@@ -12,10 +12,13 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.torusresearch.torusdirect.TorusDirectSdk;
+import org.torusresearch.torusdirect.types.AggregateLoginParams;
+import org.torusresearch.torusdirect.types.AggregateVerifierType;
 import org.torusresearch.torusdirect.types.Auth0ClientOptions;
 import org.torusresearch.torusdirect.types.DirectSdkArgs;
 import org.torusresearch.torusdirect.types.LoginType;
 import org.torusresearch.torusdirect.types.SubVerifierDetails;
+import org.torusresearch.torusdirect.types.TorusAggregateLoginResponse;
 import org.torusresearch.torusdirect.types.TorusLoginResponse;
 import org.torusresearch.torusdirect.types.TorusNetwork;
 
@@ -65,8 +68,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinner.setOnItemSelectedListener(this);
     }
 
-    @SuppressLint("SetTextI18n")
+
     public void launch(View view) {
+        singleLoginTest();
+//        aggregateLoginTest();
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void singleLoginTest() {
         Log.d("result:selecteditem", this.selectedLoginVerifier.toString());
         Auth0ClientOptions.Auth0ClientOptionsBuilder builder = null;
         if (this.selectedLoginVerifier.getDomain() != null) {
@@ -84,19 +93,31 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     this.selectedLoginVerifier.getVerifier(),
                     this.selectedLoginVerifier.getClientId(), builder.build()));
         }
-//                TorusAggregateLoginResponse torusAggregateLoginResponse;
-//                torusAggregateLoginResponse = this.torusSdk.triggerAggregateLogin(new AggregateLoginParams(AggregateVerifierType.SINGLE_VERIFIER_ID, "google-auth0-gooddollar", new SubVerifierDetails[]{
-//                        new SubVerifierDetails(LoginType.GOOGLE, "google-shubs", "1015336103925-reqktqs0ns9vfaeh7nbt8mi634u9157k.apps.googleusercontent.com")
-//                })).get();
 
-//                Gson gson = new Gson();
-//                String json = gson.toJson(torusLoginResponse);
         torusLoginResponseCf.whenComplete((torusLoginResponse, error) -> {
             if (error != null) {
                 ((TextView) findViewById(R.id.output)).setText("Something went wrong " + error.getMessage());
             } else {
                 String json = torusLoginResponse.getPublicAddress();
-//                String json = torusAggregateLoginResponse.getPublicAddress();
+                Log.d(MainActivity.class.getSimpleName(), json);
+                ((TextView) findViewById(R.id.output)).setText(json);
+            }
+        });
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void aggregateLoginTest() {
+        CompletableFuture<TorusAggregateLoginResponse> torusLoginResponseCf = this.torusSdk.triggerAggregateLogin(new AggregateLoginParams(AggregateVerifierType.SINGLE_VERIFIER_ID,
+                "chai-google-aggregate-test", new SubVerifierDetails[]{
+                new SubVerifierDetails(LoginType.GOOGLE, "google-chai", "884454361223-nnlp6vtt0me9jdsm2ptg4d1dh8i0tu74.apps.googleusercontent.com")
+        }));
+
+        torusLoginResponseCf.whenComplete((torusAggregateLoginResponse, error) -> {
+            if (error != null) {
+                Log.e("result:error", "error", error);
+                ((TextView) findViewById(R.id.output)).setText("Something went wrong " + error.getMessage());
+            } else {
+                String json = torusAggregateLoginResponse.getPublicAddress();
                 Log.d(MainActivity.class.getSimpleName(), json);
                 ((TextView) findViewById(R.id.output)).setText(json);
             }
