@@ -4,8 +4,13 @@ import org.torusresearch.torusdirect.types.JwtUserInfoResult;
 import org.torusresearch.torusdirect.types.LoginType;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
+
+import java8.util.concurrent.CompletableFuture;
+import java8.util.concurrent.ForkJoinPool;
 
 public class Helpers {
     public static HashMap<LoginType, String> loginToConnectionMap = new HashMap<LoginType, String>() {
@@ -91,5 +96,26 @@ public class Helpers {
             default:
                 throw new InvalidParameterException("Invalid typeOfLogin");
         }
+    }
+
+    public static <T> CompletableFuture<List<T>> allOfSequentially(List<CompletableFuture<T>> cfs) {
+        CompletableFuture<List<T>> returnCf = new CompletableFuture<>();
+        List<T> returnList = new ArrayList<>();
+        ForkJoinPool.commonPool().execute(() -> {
+            for (CompletableFuture<T> cf :
+                    cfs) {
+                try {
+                    // Cannot wait on main thread
+                    T resp = cf.join();
+                    returnList.add(resp);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    returnCf.completeExceptionally(e);
+                }
+            }
+            returnCf.complete(returnList);
+        });
+
+        return returnCf;
     }
 }
