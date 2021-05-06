@@ -9,8 +9,6 @@ import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.browser.customtabs.CustomTabsIntent;
 
-import com.google.gson.GsonBuilder;
-
 import org.torusresearch.torusdirect.R;
 import org.torusresearch.torusdirect.interfaces.ILoginHandler;
 
