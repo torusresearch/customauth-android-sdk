@@ -1,16 +1,25 @@
 package org.torusresearch.torusdirect.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.browser.customtabs.CustomTabsService;
+
+import com.google.gson.GsonBuilder;
 
 import org.torusresearch.torusdirect.R;
 import org.torusresearch.torusdirect.interfaces.ILoginHandler;
+import org.torusresearch.torusdirect.utils.BrowserPicker;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -25,7 +34,13 @@ public class StartUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_startup);
         isLoginStep.set(true);
+
         CustomTabsIntent intent = new CustomTabsIntent.Builder().build();
+
+        // Pick best browser that supports CustomTabs
+        String browserPackage = BrowserPicker.newBuilder().build().getBestBrowserPackage(getPackageManager());
+        intent.intent.setPackage(browserPackage);
+
         String data = getIntent().getStringExtra(URL);
         if (data == null) {
             Log.d("init:torus", "getStringExtra(URL) is NULL!!");
