@@ -60,7 +60,7 @@ public class TorusDirectSdk {
     public CompletableFuture<TorusLoginResponse> triggerLogin(SubVerifierDetails subVerifierDetails) {
         ILoginHandler handler = HandlerFactory.createHandler(new CreateHandlerParams(subVerifierDetails.getClientId(), subVerifierDetails.getVerifier(),
                 this.directSdkArgs.getRedirectUri(), subVerifierDetails.getTypeOfLogin(), this.directSdkArgs.getBrowserRedirectUri(), subVerifierDetails.getJwtParams()));
-        return handler.handleLoginWindow(context, subVerifierDetails.getIsNewActivity())
+        return handler.handleLoginWindow(context, subVerifierDetails.getIsNewActivity(), subVerifierDetails.getPreferCustomTabs())
                 .thenComposeAsync(loginWindowResponse -> handler.getUserInfo(loginWindowResponse).thenApply((userInfo) -> Pair.create(userInfo, loginWindowResponse)))
                 .thenComposeAsync(pair -> {
                     TorusVerifierResponse userInfo = pair.first;
@@ -99,7 +99,7 @@ public class TorusDirectSdk {
                 // Shouldn't open two login windows at once
                 try {
                     // Cannot wait on main thread
-                    LoginWindowResponse resp = handler.handleLoginWindow(context, subVerifierDetails.getIsNewActivity()).join();
+                    LoginWindowResponse resp = handler.handleLoginWindow(context, subVerifierDetails.getIsNewActivity(), subVerifierDetails.getPreferCustomTabs()).join();
                     // Thread safe
                     loginWindowResponses.add(resp);
                 } catch (Exception e) {

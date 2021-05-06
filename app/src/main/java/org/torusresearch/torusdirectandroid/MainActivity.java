@@ -87,11 +87,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (builder == null) {
             torusLoginResponseCf = this.torusSdk.triggerLogin(new SubVerifierDetails(this.selectedLoginVerifier.getTypeOfLogin(),
                     this.selectedLoginVerifier.getVerifier(),
-                    this.selectedLoginVerifier.getClientId()));
+                    this.selectedLoginVerifier.getClientId()).setPreferCustomTabs(true));
         } else {
             torusLoginResponseCf = this.torusSdk.triggerLogin(new SubVerifierDetails(this.selectedLoginVerifier.getTypeOfLogin(),
                     this.selectedLoginVerifier.getVerifier(),
-                    this.selectedLoginVerifier.getClientId(), builder.build()));
+                    this.selectedLoginVerifier.getClientId(), builder.build()).setPreferCustomTabs(true));
         }
 
         torusLoginResponseCf.whenComplete((torusLoginResponse, error) -> {

@@ -25,6 +25,7 @@ import static androidx.browser.customtabs.CustomTabsService.ACTION_CUSTOM_TABS_C
 
 public class StartUpActivity extends AppCompatActivity {
     public static final String URL = "URL";
+    public static final String PREFER_CUSTOM_TABS = "PREFER_CUSTOM_TABS";
     public static final List<String> ALLOWED_CUSTOM_TABS_BROWSERS = Arrays.asList(
             "com.android.chrome", // Chrome stable
             "com.google.android.apps.chrome", // Chrome system
@@ -52,7 +53,7 @@ public class StartUpActivity extends AppCompatActivity {
             data = getIntent().getDataString();
         }
 
-        Boolean preferCustomTabs = true;
+        boolean preferCustomTabs = getIntent().getBooleanExtra(PREFER_CUSTOM_TABS,true);
         String defaultBrowser = getDefaultBrowser();
         List<String> customTabsBrowsers = getCustomTabsBrowsers();
 
