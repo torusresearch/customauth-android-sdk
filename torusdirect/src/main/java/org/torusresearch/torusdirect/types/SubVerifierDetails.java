@@ -6,13 +6,19 @@ public class SubVerifierDetails {
     private String clientId;
     private Auth0ClientOptions jwtParams;
     private Boolean isNewActivity;
+    private Boolean preferCustomTabs;
 
-    public SubVerifierDetails(LoginType typeOfLogin, String verifier, String clientId, Auth0ClientOptions jwtParams, boolean isNewActivity) {
+    public SubVerifierDetails(LoginType typeOfLogin, String verifier, String clientId, Auth0ClientOptions jwtParams, boolean isNewActivity, boolean preferCustomTabs) {
         this.typeOfLogin = typeOfLogin;
         this.verifier = verifier;
         this.clientId = clientId;
         this.jwtParams = jwtParams;
         this.isNewActivity = isNewActivity;
+        this.preferCustomTabs = preferCustomTabs;
+    }
+
+    public SubVerifierDetails(LoginType typeOfLogin, String verifier, String clientId, Auth0ClientOptions jwtParams, boolean isNewActivity) {
+        this(typeOfLogin, verifier, clientId, jwtParams, isNewActivity, true);
     }
 
     public SubVerifierDetails(LoginType typeOfLogin, String verifier, String clientId) {
@@ -41,5 +47,14 @@ public class SubVerifierDetails {
 
     public boolean getIsNewActivity() {
         return isNewActivity;
+    }
+
+    public boolean getPreferCustomTabs() {
+        return preferCustomTabs;
+    }
+
+    public SubVerifierDetails setPreferCustomTabs(boolean val) {
+        preferCustomTabs = val;
+        return this;
     }
 }

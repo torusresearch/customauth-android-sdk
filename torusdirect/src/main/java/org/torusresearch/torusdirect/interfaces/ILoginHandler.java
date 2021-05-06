@@ -12,6 +12,8 @@ public interface ILoginHandler {
 
     CompletableFuture<LoginWindowResponse> handleLoginWindow(Context context, boolean isNewActivity);
 
+    CompletableFuture<LoginWindowResponse> handleLoginWindow(Context context, boolean isNewActivity, boolean preferCustomTabs);
+
     void setResponse(String response);
 
     String getFinalURL();

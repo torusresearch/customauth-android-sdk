@@ -2,6 +2,13 @@
     package="org.torusresearch.torusdirect">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <queries>
+        <intent>
+            <action android:name="android.support.customtabs.action.CustomTabsService" />
+        </intent>
+    </queries>
+
     <application>
         <activity
             android:name=".activity.StartUpActivity"
@@ -21,4 +28,5 @@
             </intent-filter>
         </activity>
     </application>
+
 </manifest>
