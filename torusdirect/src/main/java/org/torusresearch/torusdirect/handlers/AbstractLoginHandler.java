@@ -79,14 +79,4 @@ public abstract class AbstractLoginHandler implements ILoginHandler {
         context.startActivity(startupIntent);
         return loginWindowResponseCompletableFuture;
     }
-
-    @Override
-    public CompletableFuture<LoginWindowResponse> handleLoginWindow(Context context, boolean isNewActivity, boolean preferCustomTabs) {
-        return this.handleLoginWindow(context, isNewActivity, true, null);
-    }
-
-    @Override
-    public CompletableFuture<LoginWindowResponse> handleLoginWindow(Context context, boolean isNewActivity) {
-        return this.handleLoginWindow(context, isNewActivity, true);
-    }
 }

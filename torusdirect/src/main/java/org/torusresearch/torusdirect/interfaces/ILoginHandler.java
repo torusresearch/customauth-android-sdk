@@ -10,8 +10,6 @@ import java8.util.concurrent.CompletableFuture;
 public interface ILoginHandler {
     CompletableFuture<TorusVerifierResponse> getUserInfo(LoginWindowResponse params);
 
-    CompletableFuture<LoginWindowResponse> handleLoginWindow(Context context, boolean isNewActivity);
-    CompletableFuture<LoginWindowResponse> handleLoginWindow(Context context, boolean isNewActivity, boolean preferCustomTabs);
     CompletableFuture<LoginWindowResponse> handleLoginWindow(Context context, boolean isNewActivity, boolean preferCustomTabs, String[] allowedBrowsers);
 
     void setResponse(String response);
