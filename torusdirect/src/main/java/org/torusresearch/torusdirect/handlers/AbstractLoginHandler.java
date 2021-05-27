@@ -13,6 +13,7 @@ import org.torusresearch.torusdirect.types.CreateHandlerParams;
 import org.torusresearch.torusdirect.types.LoginWindowResponse;
 import org.torusresearch.torusdirect.types.State;
 import org.torusresearch.torusdirect.types.TorusVerifierResponse;
+import org.torusresearch.torusdirect.types.UserCancelledException;
 
 import java.util.UUID;
 
@@ -44,8 +45,13 @@ public abstract class AbstractLoginHandler implements ILoginHandler {
             Log.d(AbstractLoginHandler.class.getSimpleName(), loginWindowResponse.toString());
             loginWindowResponseCompletableFuture.complete(loginWindowResponse);
         } else {
-            loginWindowResponseCompletableFuture.completeExceptionally(new Exception("User closed custom tabs"));
+            loginWindowResponseCompletableFuture.completeExceptionally(new UserCancelledException());
         }
+    }
+
+    @Override
+    public void setResponse(Exception exception) {
+        loginWindowResponseCompletableFuture.completeExceptionally(exception);
     }
 
     public String getFinalURL() {
@@ -58,19 +64,25 @@ public abstract class AbstractLoginHandler implements ILoginHandler {
     public abstract CompletableFuture<TorusVerifierResponse> getUserInfo(LoginWindowResponse params);
 
     @Override
-    public CompletableFuture<LoginWindowResponse> handleLoginWindow(Context context, boolean isNewActivity, boolean preferCustomTabs) {
+    public CompletableFuture<LoginWindowResponse> handleLoginWindow(Context context, boolean isNewActivity, boolean preferCustomTabs, String[] allowedBrowsers) {
         if (StartUpActivity.loginHandler != null && StartUpActivity.loginHandler.get() == null) {
             StartUpActivity.loginHandler.set(this);
         }
         Intent startupIntent = new Intent(context, StartUpActivity.class)
                 .putExtra(StartUpActivity.URL, finalURL)
-                .putExtra(StartUpActivity.PREFER_CUSTOM_TABS, preferCustomTabs);
+                .putExtra(StartUpActivity.PREFER_CUSTOM_TABS, preferCustomTabs)
+                .putExtra(StartUpActivity.ALLOWED_BROWSERS, allowedBrowsers);
         if (isNewActivity) {
             startupIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
 
         context.startActivity(startupIntent);
         return loginWindowResponseCompletableFuture;
+    }
+
+    @Override
+    public CompletableFuture<LoginWindowResponse> handleLoginWindow(Context context, boolean isNewActivity, boolean preferCustomTabs) {
+        return this.handleLoginWindow(context, isNewActivity, true, null);
     }
 
     @Override

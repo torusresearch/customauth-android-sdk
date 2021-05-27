@@ -11,10 +11,12 @@ public interface ILoginHandler {
     CompletableFuture<TorusVerifierResponse> getUserInfo(LoginWindowResponse params);
 
     CompletableFuture<LoginWindowResponse> handleLoginWindow(Context context, boolean isNewActivity);
-
     CompletableFuture<LoginWindowResponse> handleLoginWindow(Context context, boolean isNewActivity, boolean preferCustomTabs);
+    CompletableFuture<LoginWindowResponse> handleLoginWindow(Context context, boolean isNewActivity, boolean preferCustomTabs, String[] allowedBrowsers);
 
     void setResponse(String response);
+
+    void setResponse(Exception exception);
 
     String getFinalURL();
 }

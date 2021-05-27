@@ -1,7 +1,9 @@
 package org.torusresearch.torusdirect.activity;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +13,8 @@ import androidx.browser.customtabs.CustomTabsIntent;
 
 import org.torusresearch.torusdirect.R;
 import org.torusresearch.torusdirect.interfaces.ILoginHandler;
+import org.torusresearch.torusdirect.types.NoAllowedBrowserFoundException;
+import org.torusresearch.torusdirect.types.UserCancelledException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,8 +26,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import static androidx.browser.customtabs.CustomTabsService.ACTION_CUSTOM_TABS_CONNECTION;
 
 public class StartUpActivity extends AppCompatActivity {
-    public static final String URL = "URL";
-    public static final String PREFER_CUSTOM_TABS = "PREFER_CUSTOM_TABS";
     public static final List<String> ALLOWED_CUSTOM_TABS_BROWSERS = Arrays.asList(
             "com.android.chrome", // Chrome stable
             "com.google.android.apps.chrome", // Chrome system
@@ -35,6 +37,10 @@ public class StartUpActivity extends AppCompatActivity {
             "com.opera.browser.beta", // Opera beta
             "com.vivaldi.browser" // Vivaldi
     );
+
+    public static final String URL = "URL";
+    public static final String ALLOWED_BROWSERS = "ALLOWED_BROWSERS";
+    public static final String PREFER_CUSTOM_TABS = "PREFER_CUSTOM_TABS";
 
     public static AtomicReference<ILoginHandler> loginHandler = new AtomicReference<>();
     private final AtomicBoolean isLoginStep = new AtomicBoolean();
@@ -51,9 +57,12 @@ public class StartUpActivity extends AppCompatActivity {
             data = getIntent().getDataString();
         }
 
-        boolean preferCustomTabs = getIntent().getBooleanExtra(PREFER_CUSTOM_TABS,true);
+        String[] arrayOfAllowedBrowsers = getIntent().getStringArrayExtra(ALLOWED_BROWSERS);
+        List<String> allowedBrowsers = arrayOfAllowedBrowsers != null ? Arrays.asList(arrayOfAllowedBrowsers) : null;
+        boolean preferCustomTabs = getIntent().getBooleanExtra(PREFER_CUSTOM_TABS, true);
+
         String defaultBrowser = getDefaultBrowser();
-        List<String> customTabsBrowsers = getCustomTabsBrowsers();
+        List<String> customTabsBrowsers = getCustomTabsBrowsers(allowedBrowsers);
 
         // Always open default browser in custom tabs if it is supported and whitelisted
         if (customTabsBrowsers.contains(defaultBrowser)) {
@@ -64,9 +73,11 @@ public class StartUpActivity extends AppCompatActivity {
             CustomTabsIntent customTabs = new CustomTabsIntent.Builder().build();
             customTabs.intent.setPackage(customTabsBrowsers.get(0));
             customTabs.launchUrl(this, Uri.parse(data));
-        } else {
-            // No custom tabs, externally in default browser
+        } else if (allowedBrowsers == null || allowedBrowsers.contains(defaultBrowser)) {
+            // No custom tabs, open externally in default browser (if allowed)
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(data)));
+        } else {
+            setResponse(new NoAllowedBrowserFoundException());
         }
     }
 
@@ -74,7 +85,7 @@ public class StartUpActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (!isLoginStep.get()) {
-            setResponse(null);
+            setResponse(new UserCancelledException());
         } else {
             isLoginStep.set(false);
         }
@@ -88,7 +99,7 @@ public class StartUpActivity extends AppCompatActivity {
             Log.d("result:torus", Objects.requireNonNull(intent.getData()).toString());
             setResponse(intent.getData().toString());
         } else {
-            setResponse(null);
+            setResponse(new UserCancelledException());
         }
     }
 
@@ -100,18 +111,32 @@ public class StartUpActivity extends AppCompatActivity {
         finish();
     }
 
+    private void setResponse(Exception exception) {
+        if (loginHandler != null && loginHandler.get() != null) {
+            loginHandler.get().setResponse(exception);
+            loginHandler.set(null);
+        }
+        finish();
+    }
+
     private String getDefaultBrowser() {
         PackageManager pm = getPackageManager();
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://customauth.io"));
-        return pm.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY).activityInfo.packageName;
+        ResolveInfo resolveInfo = pm.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        if (resolveInfo == null) return null;
+        ActivityInfo activityInfo = resolveInfo.activityInfo;
+        if (activityInfo == null) return null;
+        return activityInfo.packageName;
     }
 
-    private List<String> getCustomTabsBrowsers() {
+    private List<String> getCustomTabsBrowsers(List<String> allowedBrowsers) {
         PackageManager pm = getPackageManager();
 
         // Loop through whitelisted custom tabs browsers and see if they have CustomTabs service enabled
         List<String> customTabsBrowsers = new ArrayList<>();
         for (String browser : ALLOWED_CUSTOM_TABS_BROWSERS) {
+            if (allowedBrowsers != null && !allowedBrowsers.contains(browser)) continue;
+
             Intent customTabsIntent = new Intent();
             customTabsIntent.setAction(ACTION_CUSTOM_TABS_CONNECTION);
             customTabsIntent.setPackage(browser);

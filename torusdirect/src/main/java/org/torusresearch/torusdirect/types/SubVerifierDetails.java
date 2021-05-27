@@ -7,6 +7,7 @@ public class SubVerifierDetails {
     private Auth0ClientOptions jwtParams;
     private Boolean isNewActivity;
     private Boolean preferCustomTabs;
+    private String[] allowedBrowsers;
 
     public SubVerifierDetails(LoginType typeOfLogin, String verifier, String clientId, Auth0ClientOptions jwtParams, boolean isNewActivity, boolean preferCustomTabs) {
         this.typeOfLogin = typeOfLogin;
@@ -55,6 +56,13 @@ public class SubVerifierDetails {
 
     public SubVerifierDetails setPreferCustomTabs(boolean val) {
         preferCustomTabs = val;
+        return this;
+    }
+
+    public String[] getAllowedBrowsers() { return allowedBrowsers; }
+
+    public SubVerifierDetails setAllowedBrowsers(String[] val) {
+        allowedBrowsers = val;
         return this;
     }
 }
