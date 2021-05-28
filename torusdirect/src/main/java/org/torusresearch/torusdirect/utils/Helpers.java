@@ -2,6 +2,8 @@ package org.torusresearch.torusdirect.utils;
 
 import org.torusresearch.torusdirect.types.JwtUserInfoResult;
 import org.torusresearch.torusdirect.types.LoginType;
+import org.torusresearch.torusdirect.types.NoAllowedBrowserFoundException;
+import org.torusresearch.torusdirect.types.UserCancelledException;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -10,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 import java8.util.concurrent.CompletableFuture;
+import java8.util.concurrent.CompletionException;
 import java8.util.concurrent.ForkJoinPool;
 
 public class Helpers {
@@ -117,5 +120,19 @@ public class Helpers {
         });
 
         return returnCf;
+    }
+
+    public static Throwable unwrapCompletionException(Throwable error) {
+        Throwable e = error;
+        while (e instanceof CompletionException) e = e.getCause();
+        return e;
+    }
+
+    public static boolean isUserCancelledException(Throwable error) {
+        return (unwrapCompletionException(error) instanceof UserCancelledException);
+    }
+
+    public static boolean isNoAllowedBrowserFoundException(Throwable error) {
+        return (unwrapCompletionException(error) instanceof NoAllowedBrowserFoundException);
     }
 }

@@ -17,10 +17,13 @@ import org.torusresearch.torusdirect.types.AggregateVerifierType;
 import org.torusresearch.torusdirect.types.Auth0ClientOptions;
 import org.torusresearch.torusdirect.types.DirectSdkArgs;
 import org.torusresearch.torusdirect.types.LoginType;
+import org.torusresearch.torusdirect.types.NoAllowedBrowserFoundException;
 import org.torusresearch.torusdirect.types.SubVerifierDetails;
 import org.torusresearch.torusdirect.types.TorusAggregateLoginResponse;
 import org.torusresearch.torusdirect.types.TorusLoginResponse;
 import org.torusresearch.torusdirect.types.TorusNetwork;
+import org.torusresearch.torusdirect.types.UserCancelledException;
+import org.torusresearch.torusdirect.utils.Helpers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +33,6 @@ import java8.util.concurrent.CompletableFuture;
 
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-
     private final HashMap<String, LoginVerifier> verifierMap = new HashMap<String, LoginVerifier>() {
         {
             put("google", new LoginVerifier("Google", LoginType.GOOGLE, "221898609709-obfn3p63741l5333093430j3qeiinaa8.apps.googleusercontent.com", "google-lrc"));
@@ -47,6 +49,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             put("hosted_email_passwordless", new LoginVerifier("Hosted Email Passwordless", LoginType.JWT, "P7PJuBCXIHP41lcyty0NEb7Lgf7Zme8Q", "torus-auth0-passwordless", domain, "name", false));
             put("hosted_sms_passwordless", new LoginVerifier("Hosted SMS Passwordless", LoginType.JWT, "nSYBFalV2b1MSg5b2raWqHl63tfH3KQa", "torus-auth0-sms-passwordless", domain, "name", false));
         }
+    };
+
+    private final String[] allowedBrowsers = new String[] {
+            "com.android.chrome", // Chrome stable
+            "com.google.android.apps.chrome", // Chrome system
+            "com.android.chrome.beta", // Chrome beta
     };
 
     private TorusDirectSdk torusSdk;
@@ -74,6 +82,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 //        aggregateLoginTest();
     }
 
+    private void renderError(Throwable error) {
+        Log.e("result:error", "error", error);
+        TextView textView = findViewById(R.id.output);
+        Throwable reason = Helpers.unwrapCompletionException(error);
+        if (reason instanceof UserCancelledException || reason instanceof NoAllowedBrowserFoundException)
+            textView.setText(error.getMessage());
+        else
+            textView.setText("Something went wrong: " + error.getMessage());
+    }
+
     @SuppressLint("SetTextI18n")
     public void singleLoginTest() {
         Log.d("result:selecteditem", this.selectedLoginVerifier.toString());
@@ -87,16 +105,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (builder == null) {
             torusLoginResponseCf = this.torusSdk.triggerLogin(new SubVerifierDetails(this.selectedLoginVerifier.getTypeOfLogin(),
                     this.selectedLoginVerifier.getVerifier(),
-                    this.selectedLoginVerifier.getClientId()).setPreferCustomTabs(true));
+                    this.selectedLoginVerifier.getClientId())
+                        .setPreferCustomTabs(true)
+                        .setAllowedBrowsers(allowedBrowsers));
         } else {
             torusLoginResponseCf = this.torusSdk.triggerLogin(new SubVerifierDetails(this.selectedLoginVerifier.getTypeOfLogin(),
                     this.selectedLoginVerifier.getVerifier(),
-                    this.selectedLoginVerifier.getClientId(), builder.build()).setPreferCustomTabs(true));
+                    this.selectedLoginVerifier.getClientId(), builder.build())
+                        .setPreferCustomTabs(true)
+                        .setAllowedBrowsers(allowedBrowsers));
         }
 
         torusLoginResponseCf.whenComplete((torusLoginResponse, error) -> {
             if (error != null) {
-                ((TextView) findViewById(R.id.output)).setText("Something went wrong " + error.getMessage());
+                renderError(error);
             } else {
                 String json = torusLoginResponse.getPublicAddress();
                 Log.d(MainActivity.class.getSimpleName(), json);
@@ -114,8 +136,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         torusLoginResponseCf.whenComplete((torusAggregateLoginResponse, error) -> {
             if (error != null) {
-                Log.e("result:error", "error", error);
-                ((TextView) findViewById(R.id.output)).setText("Something went wrong " + error.getMessage());
+                renderError(error);
             } else {
                 String json = torusAggregateLoginResponse.getPublicAddress();
                 Log.d(MainActivity.class.getSimpleName(), json);
