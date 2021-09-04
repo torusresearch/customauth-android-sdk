@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">TorusDirectAndroid</string>
     <string name="launch">Launch</string>
+    <string name="getTorusKey">Get Torus Key</string>
 </resources>

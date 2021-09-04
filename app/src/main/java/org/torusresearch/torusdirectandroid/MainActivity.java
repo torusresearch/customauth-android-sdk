@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.torusresearch.fetchnodedetails.types.NodeDetails;
 import org.torusresearch.torusdirect.TorusDirectSdk;
 import org.torusresearch.torusdirect.types.AggregateLoginParams;
 import org.torusresearch.torusdirect.types.AggregateVerifierType;
@@ -24,10 +25,13 @@ import org.torusresearch.torusdirect.types.TorusLoginResponse;
 import org.torusresearch.torusdirect.types.TorusNetwork;
 import org.torusresearch.torusdirect.types.UserCancelledException;
 import org.torusresearch.torusdirect.utils.Helpers;
+import org.torusresearch.torusutils.types.TorusPublicKey;
+import org.torusresearch.torusutils.types.VerifierArgs;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import java8.util.concurrent.CompletableFuture;
 
@@ -67,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // Use this if your OAuth provider supports deep links
 //        DirectSdkArgs args = new DirectSdkArgs("torusapp://org.torusresearch.torusdirectandroid/redirect", TorusNetwork.TESTNET);
         // If not, use this (Please host your own script from your own domain
-        DirectSdkArgs args = new DirectSdkArgs("https://scripts.toruswallet.io/redirect.html", TorusNetwork.TESTNET, "torusapp://org.torusresearch.torusdirectandroid/redirect");
+        DirectSdkArgs args = new DirectSdkArgs("https://scripts.toruswallet.io/redirect.html", TorusNetwork.MAINNET, "torusapp://org.torusresearch.torusdirectandroid/redirect");
         this.torusSdk = new TorusDirectSdk(args, this);
         Spinner spinner = findViewById(R.id.verifierList);
         List<LoginVerifier> loginVerifierList = new ArrayList<>(verifierMap.values());
@@ -80,6 +84,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void launch(View view) {
         singleLoginTest();
 //        aggregateLoginTest();
+    }
+
+    public void getTorusKey(View view) throws ExecutionException, InterruptedException {
+        String verifier = "kurobi-mainnet";
+        String verifierId = "xR85gjYlPxfeMQF9psbRPLj3Yd02";
+        HashMap<String, Object> verifierParamsHashMap = new HashMap<>();
+        verifierParamsHashMap.put("verifier_id", verifierId);
+        String idToken = "";
+        NodeDetails nodeDetails = torusSdk.nodeDetailManager.getNodeDetails().get();
+        TorusPublicKey publicKey = torusSdk.torusUtils.getPublicAddress(nodeDetails.getTorusNodeEndpoints(), nodeDetails.getTorusNodePub(), new VerifierArgs(verifier, verifierId)).get();
+        Log.d("public address", publicKey.getAddress());
+//        torusSdk.getTorusKey(verifier, verifierId, verifierParamsHashMap, idToken);
     }
 
     private void renderError(Throwable error) {
