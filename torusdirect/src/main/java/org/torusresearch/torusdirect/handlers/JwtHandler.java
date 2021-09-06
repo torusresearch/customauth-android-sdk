@@ -2,8 +2,7 @@ package org.torusresearch.torusdirect.handlers;
 
 import android.util.Log;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.android.jwt.JWT;
 import com.google.gson.Gson;
 
 import org.torusresearch.torusdirect.types.Auth0ClientOptions;
@@ -128,7 +127,7 @@ public class JwtHandler extends AbstractLoginHandler {
                     result.getPicture(), this.params.getVerifier(), Helpers.getVerifierId(result, typeOfLogin, verifierIdField, isVerifierIdCaseSensitive), typeOfLogin));
         }).handleAsync((res, err) -> {
             if (res != null) return res;
-            DecodedJWT decodedJWT = JWT.decode(idToken);
+            JWT decodedJWT = new JWT(idToken);
             String name = decodedJWT.getClaim("name").asString();
             String email = decodedJWT.getClaim("email").asString();
             String picture = decodedJWT.getClaim("picture").asString();

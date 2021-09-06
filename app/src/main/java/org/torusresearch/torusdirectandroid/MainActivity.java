@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.bitcoinj.core.Base58;
 import org.p2p.solanaj.core.Account;
 import org.p2p.solanaj.utils.TweetNaclFast;
+import org.torusresearch.fetchnodedetails.types.NodeDetails;
 import org.torusresearch.torusdirect.TorusDirectSdk;
 import org.torusresearch.torusdirect.types.AggregateLoginParams;
 import org.torusresearch.torusdirect.types.AggregateVerifierType;
@@ -27,10 +28,13 @@ import org.torusresearch.torusdirect.types.TorusLoginResponse;
 import org.torusresearch.torusdirect.types.TorusNetwork;
 import org.torusresearch.torusdirect.types.UserCancelledException;
 import org.torusresearch.torusdirect.utils.Helpers;
+import org.torusresearch.torusutils.types.TorusPublicKey;
+import org.torusresearch.torusutils.types.VerifierArgs;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import java8.util.concurrent.CompletableFuture;
 
@@ -53,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     };
 
-    private final String[] allowedBrowsers = new String[] {
+    private final String[] allowedBrowsers = new String[]{
             "com.android.chrome", // Chrome stable
             "com.google.android.apps.chrome", // Chrome system
             "com.android.chrome.beta", // Chrome beta
@@ -105,6 +109,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         String accountInfo = String.format("Solana account secret key is %s and public Key %s",secretKey, pubKey);
         textView.setText(accountInfo);
     }
+    public void getTorusKey(View view) throws ExecutionException, InterruptedException {
+        String verifier = "google-lrc";
+        String verifierId = "hello@tor.us";
+        HashMap<String, Object> verifierParamsHashMap = new HashMap<>();
+        verifierParamsHashMap.put("verifier_id", verifierId);
+        String idToken = "";
+        NodeDetails nodeDetails = torusSdk.nodeDetailManager.getNodeDetails().get();
+        TorusPublicKey publicKey = torusSdk.torusUtils.getPublicAddress(nodeDetails.getTorusNodeEndpoints(), nodeDetails.getTorusNodePub(), new VerifierArgs(verifier, verifierId)).get();
+        Log.d("public address", publicKey.getAddress());
+//        torusSdk.getTorusKey(verifier, verifierId, verifierParamsHashMap, idToken);
+    }
 
     private void renderError(Throwable error) {
         Log.e("result:error", "error", error);
@@ -130,14 +145,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             torusLoginResponseCf = this.torusSdk.triggerLogin(new SubVerifierDetails(this.selectedLoginVerifier.getTypeOfLogin(),
                     this.selectedLoginVerifier.getVerifier(),
                     this.selectedLoginVerifier.getClientId())
-                        .setPreferCustomTabs(true)
-                        .setAllowedBrowsers(allowedBrowsers));
+                    .setPreferCustomTabs(true)
+                    .setAllowedBrowsers(allowedBrowsers));
         } else {
             torusLoginResponseCf = this.torusSdk.triggerLogin(new SubVerifierDetails(this.selectedLoginVerifier.getTypeOfLogin(),
                     this.selectedLoginVerifier.getVerifier(),
                     this.selectedLoginVerifier.getClientId(), builder.build())
-                        .setPreferCustomTabs(true)
-                        .setAllowedBrowsers(allowedBrowsers));
+                    .setPreferCustomTabs(true)
+                    .setAllowedBrowsers(allowedBrowsers));
         }
 
         torusLoginResponseCf.whenComplete((torusLoginResponse, error) -> {

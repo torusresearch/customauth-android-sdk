@@ -43,8 +43,8 @@ import java8.util.concurrent.ForkJoinPool;
 
 public class TorusDirectSdk {
     private final DirectSdkArgs directSdkArgs;
-    private final FetchNodeDetails nodeDetailManager;
-    private final TorusUtils torusUtils;
+    public final FetchNodeDetails nodeDetailManager;
+    public final TorusUtils torusUtils;
     private final Context context;
 
     public TorusDirectSdk(DirectSdkArgs _directSdkArgs, Context context) {
