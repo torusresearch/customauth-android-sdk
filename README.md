@@ -1,4 +1,4 @@
-x# Torus-direct-android-sdk
+# Torus-direct-android-sdk
 
 [![](https://jitpack.io/v/org.torusresearch/torus-direct-android-sdk.svg)](https://jitpack.io/#org.torusresearch/torus-direct-android-sdk)
 
