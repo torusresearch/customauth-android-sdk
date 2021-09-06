@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.bitcoinj.core.Base58;
+import org.p2p.solanaj.core.Account;
+import org.p2p.solanaj.utils.TweetNaclFast;
 import org.torusresearch.torusdirect.TorusDirectSdk;
 import org.torusresearch.torusdirect.types.AggregateLoginParams;
 import org.torusresearch.torusdirect.types.AggregateVerifierType;
@@ -30,7 +33,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import java8.util.concurrent.CompletableFuture;
-
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private final HashMap<String, LoginVerifier> verifierMap = new HashMap<String, LoginVerifier>() {
@@ -59,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private TorusDirectSdk torusSdk;
     private LoginVerifier selectedLoginVerifier;
+    private String privKey = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,10 +85,31 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 //        aggregateLoginTest();
     }
 
+    public TweetNaclFast.Signature.KeyPair getEd25199Key(String privateKey) {
+        byte[] decodedBytes =  TweetNaclFast.hexDecode(privateKey);
+        TweetNaclFast.Signature.KeyPair ed25519KeyPair = TweetNaclFast.Signature.keyPair_fromSeed(decodedBytes);
+        return  ed25519KeyPair;
+    }
+
+    public void  createSolanaAccount(View view) {
+        TextView textView = findViewById(R.id.output);
+
+        if (this.privKey.isEmpty()) {
+            textView.setText("Please login first to generate solana ed25519 key pair");
+            return;
+        }
+        TweetNaclFast.Signature.KeyPair ed25519KeyPair = this.getEd25199Key(this.privKey);
+        Account SolanaAccount = new Account(ed25519KeyPair.getSecretKey());
+        String pubKey = SolanaAccount.getPublicKey().toBase58();
+        String secretKey = Base58.encode(SolanaAccount.getSecretKey());
+        String accountInfo = String.format("Solana account secret key is %s and public Key %s",secretKey, pubKey);
+        textView.setText(accountInfo);
+    }
+
     private void renderError(Throwable error) {
         Log.e("result:error", "error", error);
-        TextView textView = findViewById(R.id.output);
         Throwable reason = Helpers.unwrapCompletionException(error);
+        TextView textView = findViewById(R.id.output);
         if (reason instanceof UserCancelledException || reason instanceof NoAllowedBrowserFoundException)
             textView.setText(error.getMessage());
         else
@@ -120,9 +144,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             if (error != null) {
                 renderError(error);
             } else {
-                String json = torusLoginResponse.getPublicAddress();
-                Log.d(MainActivity.class.getSimpleName(), json);
-                ((TextView) findViewById(R.id.output)).setText(json);
+                String publicAddress = torusLoginResponse.getPublicAddress();
+                this.privKey = torusLoginResponse.getPrivateKey();
+                Log.d(MainActivity.class.getSimpleName(), publicAddress);
+                ((TextView) findViewById(R.id.output)).setText(publicAddress);
             }
         });
     }

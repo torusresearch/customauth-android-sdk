@@ -45,7 +45,9 @@ android {
     }
 
 }
-
+configurations {
+    all*.exclude module: 'bcprov-jdk15on'
+}
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.2.0'
@@ -55,4 +57,5 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation project(path: ':torusdirect')
+    implementation 'com.github.p2p-org:solanaj:1c1c335f5f'
 }

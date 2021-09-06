@@ -1,4 +1,4 @@
-# Torus-direct-android-sdk
+x# Torus-direct-android-sdk
 
 [![](https://jitpack.io/v/org.torusresearch/torus-direct-android-sdk.svg)](https://jitpack.io/#org.torusresearch/torus-direct-android-sdk)
 
@@ -75,6 +75,42 @@ or
 ## Examples
 
 Please refer to example for configuration
+
+## Generating ED25519 key
+
+- By default sdk will return `secpk256k1` key, you can retrieve ed25519 keys passing the `secpk256k1` key as seed
+  in `tweetnacl` sdk `keypair_fromSeed` function. 
+
+
+
+- Refer to code snippetg given below or app folder in this repo for an example function to generate an account using solana sdk which uses `ed25519` keys.
+
+```java
+    
+    // privateKey is the key which you will get after user's login from torus-direct-android-sdk
+    public TweetNaclFast.Signature.KeyPair getEd25199Key(String privateKey) {
+        byte[] decodedBytes =  TweetNaclFast.hexDecode(privateKey);
+        TweetNaclFast.Signature.KeyPair ed25519KeyPair = TweetNaclFast.Signature.keyPair_fromSeed(decodedBytes);
+        return  ed25519KeyPair;
+    }
+
+    public void  createSolanaAccount(View view) {
+        TextView textView = findViewById(R.id.output);
+
+        if (this.privKey.isEmpty()) {
+            textView.setText("Please login first to generate solana ed25519 key pair");
+            return;
+        }
+        TweetNaclFast.Signature.KeyPair ed25519KeyPair = this.getEd25199Key(this.privKey);
+        Account SolanaAccount = new Account(ed25519KeyPair.getSecretKey());
+        String pubKey = SolanaAccount.getPublicKey().toBase58();
+        String secretKey = Base58.encode(SolanaAccount.getSecretKey());
+        String accountInfo = String.format("Solana account secret key is %s and public Key %s",secretKey, pubKey);
+        textView.setText(accountInfo);
+    }
+
+```
+
 
 ## Info
 
