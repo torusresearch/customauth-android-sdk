@@ -1,6 +1,6 @@
-# Torus-direct-android-sdk
+# Customauth-android-sdk
 
-[![](https://jitpack.io/v/org.torusresearch/torus-direct-android-sdk.svg)](https://jitpack.io/#org.torusresearch/torus-direct-android-sdk)
+[![](https://jitpack.io/v/org.torusresearch/customauth.svg)](https://jitpack.io/#org.torusresearch/customauth)
 
 ## Introduction
 
@@ -13,7 +13,7 @@ This repo allows web applications to directly retrieve keys stored on the Torus 
 
 ## Installation
 
-Typically your application should depend on release versions of torus-direct-android-sdk, but you may also use snapshot dependencies for early access to features and fixes, refer to the Snapshot Dependencies section.
+Typically your application should depend on release versions of customauth-android-sdk, but you may also use snapshot dependencies for early access to features and fixes, refer to the Snapshot Dependencies section.
 This project uses [jitpack](https://jitpack.io/docs/) for release management
 
 Add the relevant dependency to your project:
@@ -23,7 +23,7 @@ repositories {
         maven { url "https://jitpack.io" }
    }
    dependencies {
-         implementation 'org.torusresearch:torus-direct-android-sdk:1.0.0'
+         implementation 'org.torusresearch:customauth:1.0.0'
    }
 ```
 
@@ -36,8 +36,8 @@ To allow your web app to retrieve keys:
 2. At verifier's interface (where you obtain client id), please use `browserRedirectUri` in DirectSdkArgs as the redirect uri. 
 e.g: browserRedirectUri can be `YOUR_APP_DEEP_LINK` if the OAuth provider supports it. else, follow the next step
 If you specify a custom `browserRedirectUri` or OAuth provider doesn't support deep link url, 
-pls host [redirect.html](torusdirect/src/main/java/org/torusresearch/torusdirect/activity/redirect.html) at that `browserRedirectUri` 
-after editing `whiteListedURLs` in [redirect.html](torusdirect/src/main/java/org/torusresearch/torusdirect/activity/redirect.html) with the scheme specified in manifestPlaceHolders
+pls host [redirect.html](customauth/src/main/java/org/torusresearch/customauth/activity/redirect.html) at that `browserRedirectUri` 
+after editing `whiteListedURLs` in [redirect.html](customauth/src/main/java/org/torusresearch/customauth/activity/redirect.html) with the scheme specified in manifestPlaceHolders
 and pass in as `redirectUri`.
 
 3. Register the startup activity in the manifest file using manifest placeholder in build.gradle file (when a custom scheme is used)
@@ -45,14 +45,14 @@ and pass in as `redirectUri`.
 ```groovy
 android.defaultConfig.manifestPlaceholders = [
         'torusRedirectScheme': 'YOUR_APP_SCHEME', // (torusapp)
-        'torusRedirectHost': 'YOUR_APP_HOST', // (org.torusresearch.torusdirectandroid)
+        'torusRedirectHost': 'YOUR_APP_HOST', // (org.torusresearch.customauth)
         'torusRedirectPathPrefix': 'YOUR_REDIRECT_PATH' // (/redirect)
 ]
 ```
 or
 
 ```xml
-<activity android:name="org.torusresearch.torusdirect.activity.StartUpActivity"
+<activity android:name="org.torusresearch.customauth.activity.StartUpActivity"
     android:launchMode="singleTop">
     <intent-filter>
         <action android:name="android.intent.action.VIEW"/>
@@ -66,7 +66,7 @@ or
 </activity>
 ```
 
-4. Instantiate the package with your own specific client-id and browserRedirectUri as `YOUR_APP_SCHEME://YOUR_APP_HOST/YOUR_REDIRECT_PATH` (eg:`torusapp://org.torusresearch.torusdirectandroid/redirect`)
+4. Instantiate the package with your own specific client-id and browserRedirectUri as `YOUR_APP_SCHEME://YOUR_APP_HOST/YOUR_REDIRECT_PATH` (eg:`torusapp://org.torusresearch.customauth/redirect`)
 
 5. Trigger the login
 
@@ -87,7 +87,7 @@ Please refer to example for configuration
 
 ```java
     
-    // privateKey is the key which you will get after user's login from torus-direct-android-sdk
+    // privateKey is the key which you will get after user's login from customauth-android-sdk
     public TweetNaclFast.Signature.KeyPair getEd25199Key(String privateKey) {
         byte[] decodedBytes =  TweetNaclFast.hexDecode(privateKey);
         TweetNaclFast.Signature.KeyPair ed25519KeyPair = TweetNaclFast.Signature.keyPair_fromSeed(decodedBytes);
