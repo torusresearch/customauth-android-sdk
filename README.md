@@ -45,7 +45,7 @@ and pass in as `redirectUri`.
 ```groovy
 android.defaultConfig.manifestPlaceholders = [
         'torusRedirectScheme': 'YOUR_APP_SCHEME', // (torusapp)
-        'torusRedirectHost': 'YOUR_APP_HOST', // (org.torusresearch.customauth)
+        'torusRedirectHost': 'YOUR_APP_HOST', // (org.torusresearch.customauthandroid)
         'torusRedirectPathPrefix': 'YOUR_REDIRECT_PATH' // (/redirect)
 ]
 ```
@@ -66,7 +66,9 @@ or
 </activity>
 ```
 
-4. Instantiate the package with your own specific client-id and browserRedirectUri as `YOUR_APP_SCHEME://YOUR_APP_HOST/YOUR_REDIRECT_PATH` (eg:`torusapp://org.torusresearch.customauth/redirect`)
+4. Instantiate the package with your own specific client-id and browserRedirectUri
+   as `YOUR_APP_SCHEME://YOUR_APP_HOST/YOUR_REDIRECT_PATH` (
+   eg:`torusapp://org.torusresearch.customauthandroid/redirect`)
 
 5. Trigger the login
 

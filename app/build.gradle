@@ -4,7 +4,7 @@ android {
     compileSdkVersion 31
 
     defaultConfig {
-        applicationId 'org.torusresearch.customauth'
+        applicationId 'org.torusresearch.customauthandroid'
         minSdkVersion 21
         targetSdkVersion 31
         versionCode 1
@@ -14,7 +14,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [
                 'torusRedirectScheme': 'torusapp',
-                'torusRedirectHost': 'org.torusresearch.customauth',
+                'torusRedirectHost': 'org.torusresearch.customauthandroid',
                 'torusRedirectPathPrefix': '/redirect'
         ]
     }

@@ -11,7 +11,7 @@
 
     <application>
         <activity
-            android:name="org.torusresearch.customauth.activity.StartUpActivity"
+            android:name=".activity.StartUpActivity"
             android:exported="true"
             android:launchMode="singleTop">
             <intent-filter>
