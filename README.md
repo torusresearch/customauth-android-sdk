@@ -1,6 +1,6 @@
 # Customauth-android-sdk
 
-[![](https://jitpack.io/v/org.torusresearch/customauth.svg)](https://jitpack.io/#org.torusresearch/customauth)
+[![](https://jitpack.io/v/org.torusresearch/customauth-android-sdk.svg)](https://jitpack.io/#org.torusresearch/customauth-android-sdk)
 
 ## Introduction
 
@@ -23,7 +23,7 @@ repositories {
         maven { url "https://jitpack.io" }
    }
    dependencies {
-         implementation 'org.torusresearch:customauth:1.0.0'
+         implementation 'org.torusresearch:customauth-android-sdk:2.0.0'
    }
 ```
 
@@ -80,12 +80,12 @@ Please refer to example for configuration
 
 ## Generating ED25519 key
 
-- By default sdk will return `secpk256k1` key, you can retrieve ed25519 keys passing the `secpk256k1` key as seed
-  in `tweetnacl` sdk `keypair_fromSeed` function. 
+- By default sdk will return `secpk256k1` key, you can retrieve ed25519 keys passing
+  the `secpk256k1` key as seed in `tweetnacl` sdk `keypair_fromSeed` function.
 
 
-
-- Refer to code snippetg given below or app folder in this repo for an example function to generate an account using solana sdk which uses `ed25519` keys.
+- Refer to code snippet given below or app folder in this repo for an example function to generate
+  an account using solana sdk which uses `ed25519` keys.
 
 ```java
     
