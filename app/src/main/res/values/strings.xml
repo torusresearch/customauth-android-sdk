@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TorusDirectAndroid</string>
+    <string name="app_name">CustomAuth</string>
     <string name="launch">Launch</string>
     <string name="createSolanaAccount">Create Solana Account</string>
     <string name="getTorusKey">Get Torus Key</string>
