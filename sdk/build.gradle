@@ -1,5 +1,5 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
     id 'kotlin-android'
 }
 
@@ -7,17 +7,13 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "org.torusresearch.customauth.app"
         minSdk 21
         targetSdk 31
         versionCode 1
         versionName "1.0"
-        manifestPlaceholders = [
-                'torusRedirectScheme'    : 'torusapp',
-                'torusRedirectHost'      : 'org.torusresearch.customauthandroid',
-                'torusRedirectPathPrefix': '/redirect'
-        ]
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
     }
 
     buildTypes {
@@ -35,14 +31,14 @@ android {
     }
 }
 
-configurations {
-    all*.exclude module: 'bcprov-jdk15on'
-}
-
 dependencies {
-    implementation project(':sdk')
+    api 'org.torusresearch:fetch-node-details-java:1.0.10'
+    api 'org.torusresearch:torus-utils-java:1.0.13'
+    api 'androidx.browser:browser:1.4.0'
+    api 'org.web3j:crypto:4.6.0-android'
+    implementation 'com.auth0.android:jwtdecode:2.0.1'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.2'
     implementation 'com.google.code.gson:gson:2.8.9'
-    implementation 'com.github.p2p-org:solanaj:1c1c335f5f'
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'com.google.android.material:material:1.4.0'
