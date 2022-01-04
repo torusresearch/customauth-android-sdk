@@ -74,6 +74,9 @@ or
 
 6. Reach out to hello@tor.us to get your verifier spun up on the testnet today!
 
+## Proguard
+No Proguard configuration is required. SDK will automatically append necessary rules to the project's proguard-rules.txt file.
+
 ## Examples
 
 Please refer to example for configuration

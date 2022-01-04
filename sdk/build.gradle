@@ -14,13 +14,14 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles "consumer-rules.pro"
+        consumerProguardFiles "proguard-rules.pro"
     }
 
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            consumerProguardFiles 'proguard-rules.pro'
         }
     }
     compileOptions {
@@ -36,9 +37,9 @@ dependencies {
     api 'org.torusresearch:fetch-node-details-java:1.0.10'
     api 'org.torusresearch:torus-utils-java:1.0.13'
     api 'androidx.browser:browser:1.4.0'
-    api 'org.web3j:crypto:4.6.0-android'
+    api 'org.web3j:crypto:4.8.8-android'
     implementation 'com.auth0.android:jwtdecode:2.0.1'
-    implementation 'com.squareup.okhttp3:okhttp:4.9.2'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
     implementation 'com.google.code.gson:gson:2.8.9'
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.0'
