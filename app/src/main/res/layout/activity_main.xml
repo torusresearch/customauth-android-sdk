@@ -25,33 +25,31 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="80dp"
         android:onClick="launch"
         android:text="@string/launch"
-        app:layout_constraintBottom_toTopOf="@+id/output"
         app:layout_constraintTop_toBottomOf="@+id/verifierList" />
 
     <Button
-        android:id="@+id/test"
+        android:id="@+id/btnCreateSolanaAccount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
         android:onClick="createSolanaAccount"
         android:text="@string/create_solana_account"
-        app:layout_constraintBottom_toTopOf="@+id/output"
-        app:layout_constraintTop_toBottomOf="@+id/verifierList"
-        app:layout_constraintVertical_bias="0.619"
-        tools:layout_editor_absoluteX="16dp" />
+        app:layout_constraintTop_toBottomOf="@+id/launchButton" />
 
     <TextView
         android:id="@+id/output"
-        android:layout_width="382dp"
-        android:layout_height="73dp"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:scrollbars="vertical"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="36dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -63,7 +61,51 @@
         android:layout_marginVertical="16dp"
         android:onClick="getTorusKey"
         android:text="@string/get_torus_key"
-        app:layout_constraintBottom_toTopOf="@+id/output"
-        app:layout_constraintTop_toBottomOf="@+id/launchButton" />
+        app:layout_constraintTop_toBottomOf="@+id/btnCreateSolanaAccount" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/group_native_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/getTorusKeyButton">
+
+        <TextView
+            android:id="@+id/label_native_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/native_login"
+            android:textAllCaps="true"
+            android:textSize="7pt"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/label_describe_native_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/describe_native_login"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/label_native_login" />
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/button_native_google_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:buttonSize="wide"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/label_describe_native_login" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

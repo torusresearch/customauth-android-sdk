@@ -1,7 +1,9 @@
 package org.torusresearch.customauth.app;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -9,7 +11,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 
 import org.bitcoinj.core.Base58;
 import org.p2p.solanaj.core.Account;
@@ -23,6 +34,7 @@ import org.torusresearch.customauth.types.LoginType;
 import org.torusresearch.customauth.types.NoAllowedBrowserFoundException;
 import org.torusresearch.customauth.types.SubVerifierDetails;
 import org.torusresearch.customauth.types.TorusAggregateLoginResponse;
+import org.torusresearch.customauth.types.TorusKey;
 import org.torusresearch.customauth.types.TorusLoginResponse;
 import org.torusresearch.customauth.types.TorusNetwork;
 import org.torusresearch.customauth.types.UserCancelledException;
@@ -30,6 +42,7 @@ import org.torusresearch.customauth.utils.Helpers;
 import org.torusresearch.fetchnodedetails.types.NodeDetails;
 import org.torusresearch.torusutils.types.TorusPublicKey;
 import org.torusresearch.torusutils.types.VerifierArgs;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +50,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import java8.util.concurrent.CompletableFuture;
+import java8.util.function.BiConsumer;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private final HashMap<String, LoginVerifier> verifierMap = new HashMap<String, LoginVerifier>() {
@@ -64,6 +78,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     };
 
     private CustomAuth torusSdk;
+    private GoogleSignInClient googleSignIn;
+    private SignInButton buttonGoogleLogin;
+    private TextView output;
+    private static final int RC_GOOGLE_SIGN_IN = 1;
     private LoginVerifier selectedLoginVerifier;
     private String privKey = "";
 
@@ -81,10 +99,34 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // Initialize CustomAuth
         this.torusSdk = new CustomAuth(args, this);
         Spinner spinner = findViewById(R.id.verifierList);
+        output = findViewById(R.id.output);
+        output.setMovementMethod(new ScrollingMovementMethod());
         List<LoginVerifier> loginVerifierList = new ArrayList<>(verifierMap.values());
         ArrayAdapter<LoginVerifier> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, loginVerifierList);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
+
+        googleSignIn = GoogleSignIn.getClient(
+                this, new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestId()
+                        .requestEmail()
+                        .requestProfile()
+                        .requestIdToken(getString(R.string.torus_native_google_client_id))
+                        .build()
+        );
+
+        buttonGoogleLogin = findViewById(R.id.button_native_google_login);
+        buttonGoogleLogin.setOnClickListener(v -> {
+            googleSignIn.revokeAccess().continueWith(res -> googleSignIn.signOut())
+            .continueWith(res -> {
+                startActivityForResult(googleSignIn.getSignInIntent(), RC_GOOGLE_SIGN_IN);
+                return null;
+            });
+
+
+//            Intent signInIntent = googleSignIn.getSignInIntent();
+//            startActivityForResult(signInIntent, RC_GOOGLE_SIGN_IN);
+        });
     }
 
 
@@ -100,10 +142,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void createSolanaAccount(View view) {
-        TextView textView = findViewById(R.id.output);
 
         if (this.privKey.isEmpty()) {
-            textView.setText("Please login first to generate solana ed25519 key pair");
+            output.setText("Please login first to generate solana ed25519 key pair");
             return;
         }
         TweetNaclFast.Signature.KeyPair ed25519KeyPair = this.getEd25199Key(this.privKey);
@@ -111,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         String pubKey = SolanaAccount.getPublicKey().toBase58();
         String secretKey = Base58.encode(SolanaAccount.getSecretKey());
         String accountInfo = String.format("Solana account secret key is %s and public Key %s", secretKey, pubKey);
-        textView.setText(accountInfo);
+        output.setText(accountInfo);
     }
 
     public void getTorusKey(View view) throws ExecutionException, InterruptedException {
@@ -129,11 +170,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void renderError(Throwable error) {
         Log.e("result:error", "error", error);
         Throwable reason = Helpers.unwrapCompletionException(error);
-        TextView textView = findViewById(R.id.output);
+
         if (reason instanceof UserCancelledException || reason instanceof NoAllowedBrowserFoundException)
-            textView.setText(error.getMessage());
+            output.setText(error.getMessage());
         else
-            textView.setText("Something went wrong: " + error.getMessage());
+            output.setText("Something went wrong: " + error.getMessage());
     }
 
     @SuppressLint("SetTextI18n")
@@ -167,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 String publicAddress = torusLoginResponse.getPublicAddress();
                 this.privKey = torusLoginResponse.getPrivateKey();
                 Log.d(MainActivity.class.getSimpleName(), publicAddress);
-                ((TextView) findViewById(R.id.output)).setText(publicAddress);
+                output.setText(publicAddress);
             }
         });
     }
@@ -185,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             } else {
                 String json = torusAggregateLoginResponse.getPublicAddress();
                 Log.d(MainActivity.class.getSimpleName(), json);
-                ((TextView) findViewById(R.id.output)).setText(json);
+                output.setText(json);
             }
         });
     }
@@ -199,4 +240,46 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RC_GOOGLE_SIGN_IN) {
+            Task<GoogleSignInAccount> task =  GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                GoogleSignInAccount googleAccount = task.getResult(ApiException.class);
+                Log.d("lol email", googleAccount.getEmail());
+                Log.d("lol tokem", googleAccount.getIdToken());
+
+                HashMap<String, Object> verifierHashMap = new HashMap<>();
+                verifierHashMap.put("verifier_id", googleAccount.getEmail());
+
+                torusSdk.getTorusKey(
+                        getString(R.string.torus_native_google_verifier_id),
+                        googleAccount.getEmail(),
+                        verifierHashMap,
+                        googleAccount.getIdToken()
+                ).whenComplete((res, error) ->{
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (error != null) {
+                                Log.d("lol", error.getMessage().toString());
+                                output.setText("Error :" + error.getMessage());
+                            } else {
+                                output.setText(res.getPublicAddress());
+                            }
+                        }
+                    });
+                });
+
+            } catch (ApiException e) {
+                Log.d("lol", e.toString());
+                output.setText("Error :" + e.getMessage());
+            }
+        }
+    }
+
+
 }
