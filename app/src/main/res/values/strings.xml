@@ -5,8 +5,13 @@
     <string name="get_torus_key">Get Torus Key</string>
 
     <string name="native_login">Native login</string>
-    <string name="describe_native_login">This example demonstrates native Google login using getTorusKey. You can implement any sort of login similarly using either getTorusKey or getAggregateTorusKey. See docs.tor.us for details.</string>
+    <string name="describe_native_login">This example demonstrates native Google and Facebook login using getTorusKey.</string>
 
     <string name="torus_native_google_verifier_id">torus-direct-google-jwt3</string>
     <string name="torus_native_google_client_id">534391390756-bgnuantlkuchbd1r0tfg95ba7hpkegni.apps.googleusercontent.com</string>
+
+    <string name="facebook_app_id">911115852937888</string>
+    <string name="fb_login_protocol_scheme">fb911115852937888</string>
+    <string name="facebook_client_token">8622f8287e15fc261f068431f7e425c5</string>
+
 </resources>

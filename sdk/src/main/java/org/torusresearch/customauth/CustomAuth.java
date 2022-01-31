@@ -67,6 +67,7 @@ public class CustomAuth {
                     LoginWindowResponse response = pair.second;
                     HashMap<String, Object> verifierParams = new HashMap<>();
                     verifierParams.put("verifier_id", userInfo.getVerifierId());
+                    Log.d("lol fb = ", response.getAccessToken());
                     return this.getTorusKey(subVerifierDetails.getVerifier(), userInfo.getVerifierId(), verifierParams, !Helpers.isEmpty(response.getIdToken()) ? response.getIdToken() : response.getAccessToken())
                             .thenApply(torusKey -> Triplet.create(userInfo, response, torusKey));
                 }).thenApplyAsync(triplet -> {

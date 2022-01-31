@@ -105,6 +105,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/label_describe_native_login" />
 
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/login_button_fb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_native_google_login"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

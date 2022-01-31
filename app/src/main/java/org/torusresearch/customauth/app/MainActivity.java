@@ -14,6 +14,13 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -23,6 +30,8 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
 import org.bitcoinj.core.Base58;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.p2p.solanaj.core.Account;
 import org.p2p.solanaj.utils.TweetNaclFast;
 import org.torusresearch.customauth.CustomAuth;
@@ -45,6 +54,7 @@ import org.torusresearch.torusutils.types.VerifierArgs;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -85,6 +95,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private LoginVerifier selectedLoginVerifier;
     private String privKey = "";
 
+    private CallbackManager callbackManager;
+    private LoginButton loginButton;
+    private static final String EMAIL = "public_profile";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,10 +137,72 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 return null;
             });
 
-
-//            Intent signInIntent = googleSignIn.getSignInIntent();
-//            startActivityForResult(signInIntent, RC_GOOGLE_SIGN_IN);
         });
+
+        // Facebook login
+        callbackManager = CallbackManager.Factory.create();
+
+        loginButton = (LoginButton) findViewById(R.id.login_button_fb);
+        loginButton.setPermissions(Arrays.asList(EMAIL));
+
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+
+                GraphRequest request = GraphRequest.newMeRequest(
+                        loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(JSONObject object, GraphResponse response) {
+                                try {
+                                    String email = object.getString("email");
+
+                                    HashMap<String, Object> verifierHashMap = new HashMap<>();
+                                    verifierHashMap.put("verifier_id", email);
+
+                                    torusSdk.getTorusKey(
+                                            "torus-facebook-jwt",
+                                            email,
+                                            verifierHashMap,
+                                            loginResult.getAccessToken().getToken()
+                                    ).whenComplete((res, error) ->{
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if (error != null) {
+                                                    output.setText("Error :" + error.getMessage());
+                                                } else {
+                                                    output.setText(res.getPublicAddress());
+                                                }
+                                            }
+                                        });
+                                    });
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,email");
+                request.setParameters(parameters);
+                request.executeAsync();
+
+            }
+
+            @Override
+            public void onCancel() {
+                // App code
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                // App code
+                output.setText("Error :" + error.getMessage());
+            }
+        });
+
+
     }
 
 
@@ -243,14 +319,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_GOOGLE_SIGN_IN) {
             Task<GoogleSignInAccount> task =  GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 GoogleSignInAccount googleAccount = task.getResult(ApiException.class);
-                Log.d("lol email", googleAccount.getEmail());
-                Log.d("lol tokem", googleAccount.getIdToken());
 
                 HashMap<String, Object> verifierHashMap = new HashMap<>();
                 verifierHashMap.put("verifier_id", googleAccount.getEmail());
@@ -265,7 +340,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         @Override
                         public void run() {
                             if (error != null) {
-                                Log.d("lol", error.getMessage().toString());
                                 output.setText("Error :" + error.getMessage());
                             } else {
                                 output.setText(res.getPublicAddress());
@@ -275,7 +349,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 });
 
             } catch (ApiException e) {
-                Log.d("lol", e.toString());
                 output.setText("Error :" + e.getMessage());
             }
         }
