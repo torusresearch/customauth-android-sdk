@@ -1,16 +1,18 @@
 package org.torusresearch.customauth.types;
 
+import java.math.BigInteger;
+
 public class TorusAggregateLoginResponse extends TorusAggregateVerifierResponse {
-    private final String privateKey;
+    private final BigInteger privateKey;
     private final String publicAddress;
 
-    public TorusAggregateLoginResponse(TorusVerifierUnionResponse[] userInfo, String privateKey, String publicAddress) {
+    public TorusAggregateLoginResponse(TorusVerifierUnionResponse[] userInfo, BigInteger privateKey, String publicAddress) {
         super(userInfo);
         this.privateKey = privateKey;
         this.publicAddress = publicAddress;
     }
 
-    public String getPrivateKey() {
+    public BigInteger getPrivateKey() {
         return privateKey;
     }
 

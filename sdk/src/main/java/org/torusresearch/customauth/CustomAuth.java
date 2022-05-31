@@ -17,17 +17,16 @@ import org.torusresearch.customauth.types.SubVerifierDetails;
 import org.torusresearch.customauth.types.TorusAggregateLoginResponse;
 import org.torusresearch.customauth.types.TorusKey;
 import org.torusresearch.customauth.types.TorusLoginResponse;
-import org.torusresearch.customauth.types.TorusNetwork;
 import org.torusresearch.customauth.types.TorusSubVerifierInfo;
 import org.torusresearch.customauth.types.TorusVerifierResponse;
 import org.torusresearch.customauth.types.TorusVerifierUnionResponse;
 import org.torusresearch.customauth.utils.Helpers;
 import org.torusresearch.customauth.utils.Triplet;
 import org.torusresearch.fetchnodedetails.FetchNodeDetails;
-import org.torusresearch.fetchnodedetails.types.EthereumNetwork;
 import org.torusresearch.fetchnodedetails.types.NodeDetails;
 import org.torusresearch.torusutils.TorusUtils;
 import org.torusresearch.torusutils.types.RetrieveSharesResponse;
+import org.torusresearch.torusutils.types.TorusCtorOptions;
 import org.torusresearch.torusutils.types.TorusPublicKey;
 import org.torusresearch.torusutils.types.VerifierArgs;
 import org.web3j.crypto.Hash;
@@ -37,9 +36,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-
-import java8.util.concurrent.CompletableFuture;
-import java8.util.concurrent.ForkJoinPool;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ForkJoinPool;
 
 public class CustomAuth {
     public final FetchNodeDetails nodeDetailManager;
@@ -49,12 +48,14 @@ public class CustomAuth {
 
     public CustomAuth(CustomAuthArgs _customAuthArgs, Context context) {
         this.customAuthArgs = _customAuthArgs;
-        this.nodeDetailManager = new FetchNodeDetails(this.customAuthArgs.getNetwork() == TorusNetwork.TESTNET ? EthereumNetwork.ROPSTEN : EthereumNetwork.MAINNET,
-                this.customAuthArgs.getProxyContractAddress());
-        this.torusUtils = new TorusUtils(context.getPackageName());
+        this.nodeDetailManager = new FetchNodeDetails(Objects.requireNonNull(CustomAuthArgs.NETWORK_MAP.get(_customAuthArgs.getNetwork())), CustomAuthArgs.CONTRACT_MAP.get(_customAuthArgs.getNetwork()));
+        TorusCtorOptions opts = new TorusCtorOptions(context.getPackageName());
+        opts.setEnableOneKey(_customAuthArgs.isEnableOneKey());
+        opts.setNetwork(_customAuthArgs.getNetwork().toString());
+        opts.setSignerHost(CustomAuthArgs.SIGNER_MAP.get(_customAuthArgs.getNetwork()) + "/api/sign");
+        opts.setAllowHost(CustomAuthArgs.SIGNER_MAP.get(_customAuthArgs.getNetwork()) + "/api/allow");
+        this.torusUtils = new TorusUtils(opts);
         this.context = context;
-        // maybe do this for caching
-        this.nodeDetailManager.getNodeDetails().thenRun(() -> Log.d("result:torus:nodedetail", "Fetched Node Details"));
     }
 
     public CompletableFuture<TorusLoginResponse> triggerLogin(SubVerifierDetails subVerifierDetails) {
@@ -169,23 +170,18 @@ public class CustomAuth {
     }
 
     public CompletableFuture<TorusKey> getTorusKey(String verifier, String verifierId, HashMap<String, Object> verifierParams, String idToken) {
-        return this.nodeDetailManager.getNodeDetails().thenComposeAsync((details) -> torusUtils.getPublicAddress(details.getTorusNodeEndpoints(), details.getTorusNodePub(), new VerifierArgs(verifier, verifierId))
+        return this.nodeDetailManager.getNodeDetails(verifier, verifierId).thenComposeAsync((details) -> torusUtils.getPublicAddress(details.getTorusNodeEndpoints(), details.getTorusNodePub(), new VerifierArgs(verifier, verifierId))
                 .thenApply((torusPublicKey) -> Pair.create(details, torusPublicKey))
         ).thenComposeAsync(pair -> {
             NodeDetails details = pair.first;
-            try {
-                return torusUtils.retrieveShares(details.getTorusNodeEndpoints(), details.getTorusIndexes(), verifier, verifierParams, idToken).thenApply((shareResponse) -> Pair.create(pair.second, shareResponse));
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
+            return torusUtils.retrieveShares(details.getTorusNodeEndpoints(), details.getTorusIndexes(), verifier, verifierParams, idToken).thenApply((shareResponse) -> Pair.create(pair.second, shareResponse));
         }).thenComposeAsync(pair -> {
             RetrieveSharesResponse shareResponse = pair.second;
             TorusPublicKey torusPublicKey = pair.first;
             CompletableFuture<TorusKey> response = new CompletableFuture<>();
             if (shareResponse == null) {
                 response.completeExceptionally(new Exception("Invalid Share response"));
-            } else if (!shareResponse.getEthAddress().toLowerCase().equals(torusPublicKey.getAddress().toLowerCase())) {
+            } else if (!shareResponse.getEthAddress().equalsIgnoreCase(torusPublicKey.getAddress())) {
                 response.completeExceptionally(new Exception("Share response doesn't match public key response"));
             } else {
                 response.complete(new TorusKey(shareResponse.getPrivKey(), shareResponse.getEthAddress()));

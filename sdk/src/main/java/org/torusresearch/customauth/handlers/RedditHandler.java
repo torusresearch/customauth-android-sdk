@@ -9,7 +9,7 @@ import org.torusresearch.customauth.types.LoginWindowResponse;
 import org.torusresearch.customauth.types.TorusVerifierResponse;
 import org.torusresearch.customauth.utils.HttpHelpers;
 
-import java8.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletableFuture;
 import okhttp3.HttpUrl;
 import okhttp3.internal.http2.Header;
 

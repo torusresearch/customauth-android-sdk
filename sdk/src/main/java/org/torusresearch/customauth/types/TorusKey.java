@@ -1,15 +1,17 @@
 package org.torusresearch.customauth.types;
 
+import java.math.BigInteger;
+
 public class TorusKey {
-    private final String privateKey;
+    private final BigInteger privateKey;
     private final String publicAddress;
 
-    public TorusKey(String _privateKey, String _publicAddress) {
+    public TorusKey(BigInteger _privateKey, String _publicAddress) {
         this.privateKey = _privateKey;
         this.publicAddress = _publicAddress;
     }
 
-    public String getPrivateKey() {
+    public BigInteger getPrivateKey() {
         return privateKey;
     }
 

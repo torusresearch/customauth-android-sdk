@@ -19,7 +19,7 @@ import org.torusresearch.customauth.utils.HttpHelpers;
 import java.util.HashMap;
 import java.util.Map;
 
-import java8.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletableFuture;
 import okhttp3.HttpUrl;
 import okhttp3.internal.http2.Header;
 
