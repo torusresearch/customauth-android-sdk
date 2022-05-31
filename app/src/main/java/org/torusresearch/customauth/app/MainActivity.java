@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         // Option 2. Host redirect.html at your domain and proxy redirect to your app
         CustomAuthArgs args = new CustomAuthArgs("https://scripts.toruswallet.io/redirect.html", TorusNetwork.TESTNET, "torusapp://org.torusresearch.customauthandroid/redirect");
-//        args.setEnableOneKey(true);
+        // args.setEnableOneKey(true);
 
         // Initialize CustomAuth
         this.torusSdk = new CustomAuth(args, this);
