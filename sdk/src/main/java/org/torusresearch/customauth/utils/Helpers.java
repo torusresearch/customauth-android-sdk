@@ -11,9 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import java8.util.concurrent.CompletableFuture;
-import java8.util.concurrent.CompletionException;
-import java8.util.concurrent.ForkJoinPool;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.ForkJoinPool;
 
 public class Helpers {
     public static HashMap<LoginType, String> loginToConnectionMap = new HashMap<LoginType, String>() {

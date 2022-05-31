@@ -5,7 +5,7 @@ import android.content.Context;
 import org.torusresearch.customauth.types.LoginWindowResponse;
 import org.torusresearch.customauth.types.TorusVerifierResponse;
 
-import java8.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletableFuture;
 
 public interface ILoginHandler {
     CompletableFuture<TorusVerifierResponse> getUserInfo(LoginWindowResponse params);

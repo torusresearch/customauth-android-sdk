@@ -3,7 +3,6 @@
 #-keepclassmembers class org.torusresearch.customauth.**
 
 # Web3j rules  https://github.com/web3j/web3j/wiki/Android-ProGuard-rules-for-web3j-android
--dontwarn java8.util.**
 -dontwarn jnr.posix.**
 -dontwarn com.kenai.**
 

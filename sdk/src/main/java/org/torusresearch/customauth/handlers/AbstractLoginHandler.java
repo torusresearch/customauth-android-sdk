@@ -17,7 +17,7 @@ import org.torusresearch.customauth.types.UserCancelledException;
 
 import java.util.UUID;
 
-import java8.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletableFuture;
 
 public abstract class AbstractLoginHandler implements ILoginHandler {
     protected final String nonce = UUID.randomUUID().toString();

@@ -31,12 +31,13 @@ import org.torusresearch.fetchnodedetails.types.NodeDetails;
 import org.torusresearch.torusutils.types.TorusPublicKey;
 import org.torusresearch.torusutils.types.VerifierArgs;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import java8.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletableFuture;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private final HashMap<String, LoginVerifier> verifierMap = new HashMap<String, LoginVerifier>() {
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             put("line", new LoginVerifier("Line", LoginType.APPLE, "WN8bOmXKNRH1Gs8k475glfBP5gDZr9H1", "torus-auth0-line-lrc", domain));
             put("hosted_email_passwordless", new LoginVerifier("Hosted Email Passwordless", LoginType.JWT, "P7PJuBCXIHP41lcyty0NEb7Lgf7Zme8Q", "torus-auth0-passwordless", domain, "name", false));
             put("hosted_sms_passwordless", new LoginVerifier("Hosted SMS Passwordless", LoginType.JWT, "nSYBFalV2b1MSg5b2raWqHl63tfH3KQa", "torus-auth0-sms-passwordless", domain, "name", false));
+//            put("torus_passwordless", new LoginVerifier("Torus Passwordless", LoginType.JWT, "KG7zk89X3QgttSyX9NJ4fGEyFNhOcJTw", "tkey-auth0-email-passwordless-cyan", "auth.openlogin.com", "name", false));
         }
     };
 
@@ -65,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private CustomAuth torusSdk;
     private LoginVerifier selectedLoginVerifier;
-    private String privKey = "";
+    private BigInteger privKey = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         // Option 2. Host redirect.html at your domain and proxy redirect to your app
         CustomAuthArgs args = new CustomAuthArgs("https://scripts.toruswallet.io/redirect.html", TorusNetwork.TESTNET, "torusapp://org.torusresearch.customauthandroid/redirect");
+//        args.setEnableOneKey(true);
 
         // Initialize CustomAuth
         this.torusSdk = new CustomAuth(args, this);
@@ -102,11 +105,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void createSolanaAccount(View view) {
         TextView textView = findViewById(R.id.output);
 
-        if (this.privKey.isEmpty()) {
+        if (this.privKey != null) {
             textView.setText("Please login first to generate solana ed25519 key pair");
             return;
         }
-        TweetNaclFast.Signature.KeyPair ed25519KeyPair = this.getEd25199Key(this.privKey);
+        TweetNaclFast.Signature.KeyPair ed25519KeyPair = this.getEd25199Key(this.privKey.toString(16));
         Account SolanaAccount = new Account(ed25519KeyPair.getSecretKey());
         String pubKey = SolanaAccount.getPublicKey().toBase58();
         String secretKey = Base58.encode(SolanaAccount.getSecretKey());
@@ -120,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         HashMap<String, Object> verifierParamsHashMap = new HashMap<>();
         verifierParamsHashMap.put("verifier_id", verifierId);
         String idToken = "";
-        NodeDetails nodeDetails = torusSdk.nodeDetailManager.getNodeDetails().get();
+        NodeDetails nodeDetails = torusSdk.nodeDetailManager.getNodeDetails(verifier, verifierId).get();
         TorusPublicKey publicKey = torusSdk.torusUtils.getPublicAddress(nodeDetails.getTorusNodeEndpoints(), nodeDetails.getTorusNodePub(), new VerifierArgs(verifier, verifierId)).get();
         Log.d("public address", publicKey.getAddress());
         // torusSdk.getTorusKey(verifier, verifierId, verifierParamsHashMap, idToken);

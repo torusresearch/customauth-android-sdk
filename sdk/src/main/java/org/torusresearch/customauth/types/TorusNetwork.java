@@ -7,7 +7,8 @@ import java.util.Map;
 
 public enum TorusNetwork {
     MAINNET("mainnet"),
-    TESTNET("testnet");
+    TESTNET("testnet"),
+    CYAN("cyan");
 
     private static final Map<String, TorusNetwork> BY_LABEL = new HashMap<>();
 
