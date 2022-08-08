@@ -39,7 +39,7 @@ android {
 
 dependencies {
     api 'org.torusresearch:fetch-node-details-java:2.0.0'
-    api 'org.torusresearch:torus-utils-java:2.0.0'
+    api 'org.torusresearch:torus-utils-java:2.0.1'
     api 'androidx.browser:browser:1.4.0'
     api 'org.web3j:crypto:4.8.8-android'
     implementation 'com.auth0.android:jwtdecode:2.0.1'
