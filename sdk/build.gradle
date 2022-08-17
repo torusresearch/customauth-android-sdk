@@ -13,12 +13,11 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "proguard-rules.pro"
-
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             consumerProguardFiles 'proguard-rules.pro'
         }
@@ -51,5 +50,13 @@ project.afterEvaluate {
                 from components.release
             }
         }
+    }
+}
+
+tasks.whenTaskAdded { task ->
+    if(task.name.contains("Test"))
+    {
+        //this is what you need
+        task.enabled = false
     }
 }
