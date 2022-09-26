@@ -48,7 +48,7 @@ public class CustomAuth {
 
     public CustomAuth(CustomAuthArgs _customAuthArgs, Context context) {
         this.customAuthArgs = _customAuthArgs;
-        this.nodeDetailManager = new FetchNodeDetails(Objects.requireNonNull(CustomAuthArgs.NETWORK_MAP.get(_customAuthArgs.getNetwork())), CustomAuthArgs.CONTRACT_MAP.get(_customAuthArgs.getNetwork()));
+        this.nodeDetailManager = new FetchNodeDetails(_customAuthArgs.getNetwork(), CustomAuthArgs.CONTRACT_MAP.get(_customAuthArgs.getNetwork()));
         TorusCtorOptions opts = new TorusCtorOptions(context.getPackageName());
         opts.setEnableOneKey(_customAuthArgs.isEnableOneKey());
         opts.setNetwork(_customAuthArgs.getNetwork().toString());
