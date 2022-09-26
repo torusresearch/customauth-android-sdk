@@ -24,10 +24,10 @@ import org.torusresearch.customauth.types.NoAllowedBrowserFoundException;
 import org.torusresearch.customauth.types.SubVerifierDetails;
 import org.torusresearch.customauth.types.TorusAggregateLoginResponse;
 import org.torusresearch.customauth.types.TorusLoginResponse;
-import org.torusresearch.customauth.types.TorusNetwork;
 import org.torusresearch.customauth.types.UserCancelledException;
 import org.torusresearch.customauth.utils.Helpers;
 import org.torusresearch.fetchnodedetails.types.NodeDetails;
+import org.torusresearch.fetchnodedetails.types.TorusNetwork;
 import org.torusresearch.torusutils.types.TorusPublicKey;
 import org.torusresearch.torusutils.types.VerifierArgs;
 
