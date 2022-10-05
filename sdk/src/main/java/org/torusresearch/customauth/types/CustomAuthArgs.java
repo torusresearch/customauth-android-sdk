@@ -27,6 +27,7 @@ public class CustomAuthArgs {
     private String redirectUri;
     private TorusNetwork network;
     private boolean enableOneKey;
+    private String networkUrl;
 
 
     public CustomAuthArgs(String browserRedirectUri, TorusNetwork network, String _redirectUri) {
@@ -69,5 +70,13 @@ public class CustomAuthArgs {
 
     public void setEnableOneKey(boolean enableOneKey) {
         this.enableOneKey = enableOneKey;
+    }
+
+    public String getNetworkUrl() {
+        return networkUrl;
+    }
+
+    public void setNetworkUrl(String networkUrl) {
+        this.networkUrl = networkUrl;
     }
 }

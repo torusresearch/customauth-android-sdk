@@ -25,6 +25,7 @@ import org.torusresearch.customauth.utils.Triplet;
 import org.torusresearch.fetchnodedetails.FetchNodeDetails;
 import org.torusresearch.fetchnodedetails.types.NodeDetails;
 import org.torusresearch.torusutils.TorusUtils;
+import org.torusresearch.torusutils.helpers.Utils;
 import org.torusresearch.torusutils.types.RetrieveSharesResponse;
 import org.torusresearch.torusutils.types.TorusCtorOptions;
 import org.torusresearch.torusutils.types.TorusPublicKey;
@@ -36,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 
@@ -48,7 +48,14 @@ public class CustomAuth {
 
     public CustomAuth(CustomAuthArgs _customAuthArgs, Context context) {
         this.customAuthArgs = _customAuthArgs;
-        this.nodeDetailManager = new FetchNodeDetails(_customAuthArgs.getNetwork(), CustomAuthArgs.CONTRACT_MAP.get(_customAuthArgs.getNetwork()));
+        if (Utils.isEmpty(_customAuthArgs.getNetworkUrl())) {
+            this.nodeDetailManager = new FetchNodeDetails(_customAuthArgs.getNetwork(),
+                    CustomAuthArgs.CONTRACT_MAP.get(_customAuthArgs.getNetwork()));
+        } else {
+            this.nodeDetailManager = new FetchNodeDetails(_customAuthArgs.getNetworkUrl(),
+                    CustomAuthArgs.CONTRACT_MAP.get(_customAuthArgs.getNetwork()));
+        }
+
         TorusCtorOptions opts = new TorusCtorOptions(context.getPackageName());
         opts.setEnableOneKey(_customAuthArgs.isEnableOneKey());
         opts.setNetwork(_customAuthArgs.getNetwork().toString());
