@@ -32,7 +32,7 @@ android {
 }
 
 dependencies {
-    api 'org.torusresearch:fetch-node-details-java:3.0.0'
+    api 'org.torusresearch:fetch-node-details-java:3.1.0'
     api 'org.torusresearch:torus-utils-java:2.1.1'
     api 'androidx.browser:browser:1.4.0'
     api 'org.web3j:crypto:4.8.8-android'
