@@ -20,7 +20,7 @@ repositories {
         maven { url "https://jitpack.io" }
    }
    dependencies {
-         implementation 'org.torusresearch:customauth-android-sdk:3.0.2'
+         implementation 'org.torusresearch:customauth-android-sdk:5.0.2'
    }
 ```
 
