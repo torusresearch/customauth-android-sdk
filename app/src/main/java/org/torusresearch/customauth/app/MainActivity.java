@@ -23,6 +23,7 @@ import org.torusresearch.customauth.types.LoginType;
 import org.torusresearch.customauth.types.NoAllowedBrowserFoundException;
 import org.torusresearch.customauth.types.SubVerifierDetails;
 import org.torusresearch.customauth.types.TorusAggregateLoginResponse;
+import org.torusresearch.customauth.types.TorusKey;
 import org.torusresearch.customauth.types.TorusLoginResponse;
 import org.torusresearch.customauth.types.UserCancelledException;
 import org.torusresearch.customauth.utils.Helpers;
@@ -32,6 +33,8 @@ import org.torusresearch.torusutils.types.TorusPublicKey;
 import org.torusresearch.torusutils.types.VerifierArgs;
 
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -117,16 +120,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         textView.setText(accountInfo);
     }
 
-    public void getTorusKey(View view) throws ExecutionException, InterruptedException {
-        String verifier = "google-lrc";
+    public void getTorusKey(View view) throws ExecutionException, InterruptedException, NoSuchAlgorithmException, InvalidKeySpecException {
+        String verifier = "torus-test-health";
         String verifierId = "hello@tor.us";
         HashMap<String, Object> verifierParamsHashMap = new HashMap<>();
         verifierParamsHashMap.put("verifier_id", verifierId);
-        String idToken = "";
+        String idToken = JwtUtils.generateIdToken(verifierId);
         NodeDetails nodeDetails = torusSdk.nodeDetailManager.getNodeDetails(verifier, verifierId).get();
         TorusPublicKey publicKey = torusSdk.torusUtils.getPublicAddress(nodeDetails.getTorusNodeEndpoints(), nodeDetails.getTorusNodePub(), new VerifierArgs(verifier, verifierId)).get();
         Log.d("public address", publicKey.getAddress());
-        // torusSdk.getTorusKey(verifier, verifierId, verifierParamsHashMap, idToken);
+        TorusKey torusKey = torusSdk.getTorusKey(verifier, verifierId, verifierParamsHashMap, idToken).get();
+        System.out.println("TorusKey: " + torusKey.getPrivateKey());
+        ((TextView) findViewById(R.id.output)).setText(torusKey.getPrivateKey().toString(16));
     }
 
     private void renderError(Throwable error) {
