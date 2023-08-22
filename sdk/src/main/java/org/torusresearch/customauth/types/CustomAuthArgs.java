@@ -19,6 +19,8 @@ public class CustomAuthArgs {
         put(TorusNetwork.TESTNET, "https://signer.tor.us");
         put(TorusNetwork.CYAN, "https://signer-polygon.tor.us");
         put(TorusNetwork.AQUA, "https://signer-polygon.tor.us");
+        put(TorusNetwork.SAPPHIRE_MAINNET, "https://signer.tor.us");
+        put(TorusNetwork.SAPPHIRE_DEVNET, "https://signer.tor.us");
     }};
 
 

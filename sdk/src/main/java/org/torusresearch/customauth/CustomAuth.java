@@ -15,7 +15,6 @@ import org.torusresearch.customauth.types.CustomAuthArgs;
 import org.torusresearch.customauth.types.LoginWindowResponse;
 import org.torusresearch.customauth.types.SubVerifierDetails;
 import org.torusresearch.customauth.types.TorusAggregateLoginResponse;
-import org.torusresearch.customauth.types.TorusKey;
 import org.torusresearch.customauth.types.TorusLoginResponse;
 import org.torusresearch.customauth.types.TorusSubVerifierInfo;
 import org.torusresearch.customauth.types.TorusVerifierResponse;
@@ -32,6 +31,7 @@ import org.torusresearch.torusutils.types.TorusPublicKey;
 import org.torusresearch.torusutils.types.VerifierArgs;
 import org.web3j.crypto.Hash;
 
+import java.math.BigInteger;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,12 +80,12 @@ public class CustomAuth {
                 }).thenApplyAsync(triplet -> {
                     TorusVerifierResponse torusVerifierResponse = triplet.first;
                     LoginWindowResponse loginWindowResponse = triplet.second;
-                    TorusKey torusKey = triplet.third;
+                    RetrieveSharesResponse retrieveSharesResponse = triplet.third;
                     TorusVerifierUnionResponse response = new TorusVerifierUnionResponse(torusVerifierResponse.getEmail(), torusVerifierResponse.getName(), torusVerifierResponse.getProfileImage(),
                             torusVerifierResponse.getVerifier(), torusVerifierResponse.getVerifierId(), torusVerifierResponse.getTypeOfLogin());
                     response.setAccessToken(loginWindowResponse.getAccessToken());
                     response.setIdToken(loginWindowResponse.getIdToken());
-                    return new TorusLoginResponse(response, torusKey.getPrivateKey(), torusKey.getPublicAddress());
+                    return new TorusLoginResponse(response, new BigInteger(retrieveSharesResponse.getFinalKeyData().getPrivKey()), retrieveSharesResponse.getFinalKeyData().getEvmAddress());
                 });
     }
 
@@ -160,7 +160,7 @@ public class CustomAuth {
             aggregateVerifierParamsHashMap.put("verifier_id", aggregateVerifierParams.getVerifier_id());
             return this.getTorusKey(aggregateLoginParams.getVerifierIdentifier(), aggregateVerifierId, aggregateVerifierParamsHashMap, aggregateIdToken).thenApply((torusKey) -> Pair.create(userInfoArray, torusKey));
         }).thenApplyAsync(pair -> {
-            TorusKey torusKey = pair.second;
+            RetrieveSharesResponse retrieveSharesResponse = pair.second;
             List<TorusVerifierResponse> userInfoArray = pair.first;
             TorusVerifierUnionResponse[] unionResponses = new TorusVerifierUnionResponse[subVerifierDetailsArray.length];
             for (int i = 0; i < subVerifierDetailsArray.length; i++) {
@@ -170,34 +170,34 @@ public class CustomAuth {
                 unionResponses[i].setAccessToken(y.getAccessToken());
                 unionResponses[i].setIdToken(y.getIdToken());
             }
-            return new TorusAggregateLoginResponse(unionResponses, torusKey.getPrivateKey(), torusKey.getPublicAddress());
+            return new TorusAggregateLoginResponse(unionResponses, new BigInteger(retrieveSharesResponse.getFinalKeyData().getPrivKey()), retrieveSharesResponse.getFinalKeyData().getEvmAddress());
         });
 
 
     }
 
-    public CompletableFuture<TorusKey> getTorusKey(String verifier, String verifierId, HashMap<String, Object> verifierParams, String idToken) {
-        return this.nodeDetailManager.getNodeDetails(verifier, verifierId).thenComposeAsync((details) -> torusUtils.getPublicAddress(details.getTorusNodeEndpoints(), details.getTorusNodePub(), new VerifierArgs(verifier, verifierId))
+    public CompletableFuture<RetrieveSharesResponse> getTorusKey(String verifier, String verifierId, HashMap<String, Object> verifierParams, String idToken) {
+        return this.nodeDetailManager.getNodeDetails(verifier, verifierId).thenComposeAsync((details) -> torusUtils.getPublicAddress(getTorusNodeEndpoints(details), details.getTorusNodePub(), new VerifierArgs(verifier, verifierId))
                 .thenApply((torusPublicKey) -> Pair.create(details, torusPublicKey))
         ).thenComposeAsync(pair -> {
             NodeDetails details = pair.first;
-            return torusUtils.retrieveShares(details.getTorusNodeEndpoints(), details.getTorusIndexes(), verifier, verifierParams, idToken).thenApply((shareResponse) -> Pair.create(pair.second, shareResponse));
+            return torusUtils.retrieveShares(getTorusNodeEndpoints(details), details.getTorusIndexes(), verifier, verifierParams, idToken).thenApply((shareResponse) -> Pair.create(pair.second, shareResponse));
         }).thenComposeAsync(pair -> {
             RetrieveSharesResponse shareResponse = pair.second;
             TorusPublicKey torusPublicKey = pair.first;
-            CompletableFuture<TorusKey> response = new CompletableFuture<>();
+            CompletableFuture<RetrieveSharesResponse> response = new CompletableFuture<>();
             if (shareResponse == null) {
                 response.completeExceptionally(new Exception("Invalid Share response"));
-            } else if (!shareResponse.getEthAddress().equalsIgnoreCase(torusPublicKey.getAddress())) {
+            } else if (!shareResponse.getFinalKeyData().getEvmAddress().equalsIgnoreCase(torusPublicKey.getFinalKeyData().getEvmAddress())) {
                 response.completeExceptionally(new Exception("Share response doesn't match public key response"));
             } else {
-                response.complete(new TorusKey(shareResponse.getPrivKey(), shareResponse.getEthAddress()));
+                response.complete(shareResponse);
             }
             return response;
         });
     }
 
-    public CompletableFuture<TorusKey> getAggregateTorusKey(String verifier, String verifierId, TorusSubVerifierInfo[] subVerifierInfoArray) {
+    public CompletableFuture<RetrieveSharesResponse> getAggregateTorusKey(String verifier, String verifierId, TorusSubVerifierInfo[] subVerifierInfoArray) {
         AggregateVerifierParams aggregateVerifierParams = new AggregateVerifierParams();
         aggregateVerifierParams.setVerify_params(new AggregateVerifierParams.VerifierParams[subVerifierInfoArray.length]);
         aggregateVerifierParams.setSub_verifier_ids(new String[subVerifierInfoArray.length]);
@@ -220,5 +220,13 @@ public class CustomAuth {
         aggregateVerifierParamsHashMap.put("sub_verifier_ids", aggregateVerifierParams.getSub_verifier_ids());
         aggregateVerifierParamsHashMap.put("verifier_id", aggregateVerifierParams.getVerifier_id());
         return this.getTorusKey(verifier, aggregateVerifierId, aggregateVerifierParamsHashMap, aggregateIdToken);
+    }
+
+    private String[] getTorusNodeEndpoints(NodeDetails nodeDetails) {
+        if(customAuthArgs.getNetwork().toString().contains("sapphire")) {
+            return nodeDetails.getTorusNodeSSSEndpoints();
+        } else {
+            return nodeDetails.getTorusNodeEndpoints();
+        }
     }
 }
