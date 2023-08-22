@@ -86,7 +86,8 @@ public class CustomAuth {
                             torusVerifierResponse.getVerifier(), torusVerifierResponse.getVerifierId(), torusVerifierResponse.getTypeOfLogin());
                     response.setAccessToken(loginWindowResponse.getAccessToken());
                     response.setIdToken(loginWindowResponse.getIdToken());
-                    return new TorusLoginResponse(response, retrieveSharesResponse.getFinalKeyData().getPrivKey(), retrieveSharesResponse.getFinalKeyData().getEvmAddress());
+                    return new TorusLoginResponse(response, retrieveSharesResponse.getFinalKeyData().getPrivKey(), retrieveSharesResponse.getFinalKeyData().getEvmAddress(),
+                            retrieveSharesResponse.getMetadata().getNonce(), retrieveSharesResponse.getMetadata().getTypeOfUser().toString());
                 });
     }
 
