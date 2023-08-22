@@ -31,7 +31,6 @@ import org.torusresearch.fetchnodedetails.types.TorusNetwork;
 import org.torusresearch.torusutils.types.TorusPublicKey;
 import org.torusresearch.torusutils.types.VerifierArgs;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private CustomAuth torusSdk;
     private LoginVerifier selectedLoginVerifier;
-    private BigInteger privKey = null;
+    private String privKey = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +76,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // DirectSdkArgs args = new DirectSdkArgs("torusapp://org.torusresearch.customauthandroid/redirect", TorusNetwork.TESTNET);
 
         // Option 2. Host redirect.html at your domain and proxy redirect to your app
-        CustomAuthArgs args = new CustomAuthArgs("https://scripts.toruswallet.io/redirect.html", TorusNetwork.SAPPHIRE_MAINNET, "torusapp://org.torusresearch.customauthandroid/redirect");
+        CustomAuthArgs args = new CustomAuthArgs("https://scripts.toruswallet.io/redirect.html", TorusNetwork.SAPPHIRE_DEVNET, "torusapp://org.torusresearch.customauthandroid/redirect",
+                "BG4pe3aBso5SjVbpotFQGnXVHgxhgOxnqnNBKyjfEJ3izFvIVWUaMIzoCrAfYag8O6t6a6AOvdLcS4JR2sQMjR4");
         args.setEnableOneKey(true);
 
         // Initialize CustomAuth
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             textView.setText("Please login first to generate solana ed25519 key pair");
             return;
         }
-        TweetNaclFast.Signature.KeyPair ed25519KeyPair = this.getEd25199Key(this.privKey.toString(16));
+        TweetNaclFast.Signature.KeyPair ed25519KeyPair = this.getEd25199Key(this.privKey);
         Account SolanaAccount = new Account(ed25519KeyPair.getSecretKey());
         String pubKey = SolanaAccount.getPublicKey().toBase58();
         String secretKey = Base58.encode(SolanaAccount.getSecretKey());
@@ -169,7 +169,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 String publicAddress = torusLoginResponse.getPublicAddress();
                 this.privKey = torusLoginResponse.getPrivateKey();
                 Log.d(MainActivity.class.getSimpleName(), publicAddress);
-                ((TextView) findViewById(R.id.output)).setText(publicAddress);
+                Log.d(MainActivity.class.getSimpleName(), this.privKey);
+                ((TextView) findViewById(R.id.output)).setText("Public Key: " + publicAddress);
             }
         });
     }

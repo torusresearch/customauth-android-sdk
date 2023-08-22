@@ -57,6 +57,7 @@ public class CustomAuth {
         }
 
         TorusCtorOptions opts = new TorusCtorOptions(context.getPackageName());
+        opts.setClientId(_customAuthArgs.getClientId());
         opts.setEnableOneKey(_customAuthArgs.isEnableOneKey());
         opts.setNetwork(_customAuthArgs.getNetwork().toString());
         opts.setSignerHost(CustomAuthArgs.SIGNER_MAP.get(_customAuthArgs.getNetwork()) + "/api/sign");
@@ -85,7 +86,7 @@ public class CustomAuth {
                             torusVerifierResponse.getVerifier(), torusVerifierResponse.getVerifierId(), torusVerifierResponse.getTypeOfLogin());
                     response.setAccessToken(loginWindowResponse.getAccessToken());
                     response.setIdToken(loginWindowResponse.getIdToken());
-                    return new TorusLoginResponse(response, new BigInteger(retrieveSharesResponse.getFinalKeyData().getPrivKey()), retrieveSharesResponse.getFinalKeyData().getEvmAddress());
+                    return new TorusLoginResponse(response, retrieveSharesResponse.getFinalKeyData().getPrivKey(), retrieveSharesResponse.getFinalKeyData().getEvmAddress());
                 });
     }
 
