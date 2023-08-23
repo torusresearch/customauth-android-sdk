@@ -1,24 +1,35 @@
 package org.torusresearch.customauth.types;
 
+import org.torusresearch.torusutils.types.FinalKeyData;
+import org.torusresearch.torusutils.types.Metadata;
+import org.torusresearch.torusutils.types.RetrieveSharesResponse;
+import org.torusresearch.torusutils.types.SessionData;
+
 import java.math.BigInteger;
 
 public class TorusLoginResponse extends TorusSingleVerifierResponse {
-    private final String privateKey;
+    private final BigInteger privateKey;
     private final String publicAddress;
 
-    private final BigInteger nonce;
+    private final RetrieveSharesResponse retrieveSharesResponse;
+    private final FinalKeyData finalKeyData;
+    private final FinalKeyData oAuthKeyData;
+    private final Metadata metadata;
+    private final SessionData sessionData;
 
-    private final String typeOfUser;
-
-    public TorusLoginResponse(TorusVerifierUnionResponse userInfo, String privateKey, String publicAddress, BigInteger nonce, String  typeOfUser) {
+    public TorusLoginResponse(TorusVerifierUnionResponse userInfo, BigInteger privateKey, String publicAddress, RetrieveSharesResponse retrieveSharesResponse, FinalKeyData finalKeyData,
+                              FinalKeyData oAuthKeyData, Metadata metadata, SessionData sessionData) {
         super(userInfo);
         this.privateKey = privateKey;
         this.publicAddress = publicAddress;
-        this.nonce = nonce;
-        this.typeOfUser = typeOfUser;
+        this.retrieveSharesResponse = retrieveSharesResponse;
+        this.finalKeyData = finalKeyData;
+        this.oAuthKeyData = oAuthKeyData;
+        this.metadata = metadata;
+        this.sessionData = sessionData;
     }
 
-    public String getPrivateKey() {
+    public BigInteger getPrivateKey() {
         return privateKey;
     }
 
@@ -26,14 +37,25 @@ public class TorusLoginResponse extends TorusSingleVerifierResponse {
         return publicAddress;
     }
 
-    private BigInteger getNonce() {
-        return nonce;
+    public RetrieveSharesResponse getRetrieveSharesResponse() {
+        return retrieveSharesResponse;
     }
 
-    public String getTypeOfUser() {
-        return typeOfUser;
+    public FinalKeyData getFinalKeyData() {
+        return finalKeyData;
     }
 
+    public FinalKeyData getoAuthKeyData() {
+        return oAuthKeyData;
+    }
+
+    public Metadata getMetadata() {
+        return metadata;
+    }
+
+    public SessionData getSessionData() {
+        return sessionData;
+    }
 
 }
 

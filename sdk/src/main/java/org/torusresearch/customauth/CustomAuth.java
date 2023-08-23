@@ -86,8 +86,12 @@ public class CustomAuth {
                             torusVerifierResponse.getVerifier(), torusVerifierResponse.getVerifierId(), torusVerifierResponse.getTypeOfLogin());
                     response.setAccessToken(loginWindowResponse.getAccessToken());
                     response.setIdToken(loginWindowResponse.getIdToken());
-                    return new TorusLoginResponse(response, retrieveSharesResponse.getFinalKeyData().getPrivKey(), retrieveSharesResponse.getFinalKeyData().getEvmAddress(),
-                            retrieveSharesResponse.getMetadata().getNonce(), retrieveSharesResponse.getMetadata().getTypeOfUser().toString());
+                    return new TorusLoginResponse(response, new BigInteger(retrieveSharesResponse.getFinalKeyData().getPrivKey(), 16), retrieveSharesResponse.getFinalKeyData().getEvmAddress(),
+                            retrieveSharesResponse,
+                            retrieveSharesResponse.getFinalKeyData(),
+                            retrieveSharesResponse.getFinalKeyData(),
+                            retrieveSharesResponse.getMetadata(),
+                            null);
                 });
     }
 
@@ -172,7 +176,9 @@ public class CustomAuth {
                 unionResponses[i].setAccessToken(y.getAccessToken());
                 unionResponses[i].setIdToken(y.getIdToken());
             }
-            return new TorusAggregateLoginResponse(unionResponses, new BigInteger(retrieveSharesResponse.getFinalKeyData().getPrivKey()), retrieveSharesResponse.getFinalKeyData().getEvmAddress());
+            return new TorusAggregateLoginResponse(unionResponses, new BigInteger(retrieveSharesResponse.getFinalKeyData().getPrivKey(), 16),
+                    retrieveSharesResponse.getFinalKeyData().getEvmAddress(),
+                    retrieveSharesResponse);
         });
 
 
