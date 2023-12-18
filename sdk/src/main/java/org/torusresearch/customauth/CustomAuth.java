@@ -48,12 +48,8 @@ public class CustomAuth {
     public CustomAuth(CustomAuthArgs _customAuthArgs, Context context) {
         this.customAuthArgs = _customAuthArgs;
         this.nodeDetailManager = new FetchNodeDetails(_customAuthArgs.getNetwork());
-        /*if (Utils.isEmpty(_customAuthArgs.getNetworkUrl())) {
-            this.nodeDetailManager = new FetchNodeDetails(_customAuthArgs.getNetwork());
-        }*/
 
-        TorusCtorOptions opts = new TorusCtorOptions(context.getPackageName());
-        opts.setClientId(_customAuthArgs.getClientId());
+        TorusCtorOptions opts = new TorusCtorOptions(context.getPackageName(), customAuthArgs.getClientId());
         opts.setEnableOneKey(_customAuthArgs.isEnableOneKey());
         opts.setNetwork(_customAuthArgs.getNetwork().toString());
         opts.setSignerHost(CustomAuthArgs.SIGNER_MAP.get(_customAuthArgs.getNetwork()) + "/api/sign");

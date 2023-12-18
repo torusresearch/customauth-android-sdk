@@ -12,12 +12,12 @@ android {
             keyPassword 'torus123'
         }
     }
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "org.torusresearch.customauth.app"
         minSdk 24
-        targetSdk 31
+        targetSdk 33
         versionCode 1
         versionName "1.0"
         manifestPlaceholders = [

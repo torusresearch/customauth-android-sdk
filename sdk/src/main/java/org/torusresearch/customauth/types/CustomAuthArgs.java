@@ -15,7 +15,6 @@ public class CustomAuthArgs {
         put(TorusNetwork.SAPPHIRE_DEVNET, "https://signer.tor.us");
     }};
 
-
     // Android package redirect uri
     private final String browserRedirectUri;
     private String redirectUri;
