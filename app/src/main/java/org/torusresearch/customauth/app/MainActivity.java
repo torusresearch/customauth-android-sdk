@@ -35,9 +35,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private final HashMap<String, LoginVerifier> verifierMap = new HashMap<String, LoginVerifier>() {
@@ -78,8 +77,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // DirectSdkArgs args = new DirectSdkArgs("torusapp://org.torusresearch.customauthandroid/redirect", TorusNetwork.TESTNET);
 
         // Option 2. Host redirect.html at your domain and proxy redirect to your app
-        CustomAuthArgs args = new CustomAuthArgs("https://scripts.toruswallet.io/redirect.html", TorusNetwork.TESTNET, "torusapp://org.torusresearch.customauthandroid/redirect");
-        // args.setEnableOneKey(true);
+        // clientId is mandatory field.
+        CustomAuthArgs args = new CustomAuthArgs("https://scripts.toruswallet.io/redirect.html", TorusNetwork.SAPPHIRE_MAINNET, "torusapp://org.torusresearch.customauthandroid/redirect",
+                "BEaGnq-mY0ZOXk2UT1ivWUe0PZ_iJX4Vyb6MtpOp7RMBu_6ErTrATlfuK3IaFcvHJr27h6L1T4owkBH6srLphIw");
+        args.setEnableOneKey(true);
 
         // Initialize CustomAuth
         this.torusSdk = new CustomAuth(args, this);
@@ -125,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         String idToken = "";
         NodeDetails nodeDetails = torusSdk.nodeDetailManager.getNodeDetails(verifier, verifierId).get();
         TorusPublicKey publicKey = torusSdk.torusUtils.getPublicAddress(nodeDetails.getTorusNodeEndpoints(), nodeDetails.getTorusNodePub(), new VerifierArgs(verifier, verifierId)).get();
-        Log.d("public address", publicKey.getAddress());
+        Log.d("public address", publicKey.getFinalKeyData().evmAddress);
         // torusSdk.getTorusKey(verifier, verifierId, verifierParamsHashMap, idToken);
     }
 
@@ -170,7 +171,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 String publicAddress = torusLoginResponse.getPublicAddress();
                 this.privKey = torusLoginResponse.getPrivateKey();
                 Log.d(MainActivity.class.getSimpleName(), publicAddress);
-                ((TextView) findViewById(R.id.output)).setText(publicAddress);
+                Log.d(MainActivity.class.getSimpleName(), String.valueOf(this.privKey));
+                ((TextView) findViewById(R.id.output)).setText("Public Key: " + publicAddress);
             }
         });
     }
