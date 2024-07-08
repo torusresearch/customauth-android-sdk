@@ -35,9 +35,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private final HashMap<String, LoginVerifier> verifierMap = new HashMap<String, LoginVerifier>() {
@@ -78,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // DirectSdkArgs args = new DirectSdkArgs("torusapp://org.torusresearch.customauthandroid/redirect", TorusNetwork.TESTNET);
 
         // Option 2. Host redirect.html at your domain and proxy redirect to your app
-        CustomAuthArgs args = new CustomAuthArgs("https://scripts.toruswallet.io/redirect.html", TorusNetwork.TESTNET, "torusapp://org.torusresearch.customauthandroid/redirect");
+        CustomAuthArgs args = new CustomAuthArgs("https://scripts.toruswallet.io/redirect.html", TorusNetwork.TESTNET, "torusapp://org.torusresearch.customauthandroid/redirect", "YOUR_CLIENT_ID");
         // args.setEnableOneKey(true);
 
         // Initialize CustomAuth

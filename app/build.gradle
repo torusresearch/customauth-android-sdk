@@ -12,12 +12,12 @@ android {
             keyPassword 'torus123'
         }
     }
-    compileSdk 32
+    compileSdk 34
 
     defaultConfig {
         applicationId "org.torusresearch.customauth.app"
         minSdk 24
-        targetSdk 31
+        targetSdk 34
         versionCode 1
         versionName "1.0"
         manifestPlaceholders = [
@@ -43,6 +43,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    namespace 'org.torusresearch.customauth.app'
 }
 
 configurations {

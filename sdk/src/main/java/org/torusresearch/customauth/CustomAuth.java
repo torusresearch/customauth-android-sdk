@@ -25,7 +25,6 @@ import org.torusresearch.customauth.utils.Triplet;
 import org.torusresearch.fetchnodedetails.FetchNodeDetails;
 import org.torusresearch.fetchnodedetails.types.NodeDetails;
 import org.torusresearch.torusutils.TorusUtils;
-import org.torusresearch.torusutils.helpers.Utils;
 import org.torusresearch.torusutils.types.RetrieveSharesResponse;
 import org.torusresearch.torusutils.types.TorusCtorOptions;
 import org.torusresearch.torusutils.types.TorusPublicKey;
@@ -48,15 +47,9 @@ public class CustomAuth {
 
     public CustomAuth(CustomAuthArgs _customAuthArgs, Context context) {
         this.customAuthArgs = _customAuthArgs;
-        if (Utils.isEmpty(_customAuthArgs.getNetworkUrl())) {
-            this.nodeDetailManager = new FetchNodeDetails(_customAuthArgs.getNetwork(),
-                    CustomAuthArgs.CONTRACT_MAP.get(_customAuthArgs.getNetwork()));
-        } else {
-            this.nodeDetailManager = new FetchNodeDetails(_customAuthArgs.getNetworkUrl(),
-                    CustomAuthArgs.CONTRACT_MAP.get(_customAuthArgs.getNetwork()));
-        }
+        this.nodeDetailManager = new FetchNodeDetails(_customAuthArgs.getNetwork());
 
-        TorusCtorOptions opts = new TorusCtorOptions(context.getPackageName());
+        TorusCtorOptions opts = new TorusCtorOptions(context.getPackageName(), _customAuthArgs.getClientId());
         opts.setEnableOneKey(_customAuthArgs.isEnableOneKey());
         opts.setNetwork(_customAuthArgs.getNetwork().toString());
         opts.setSignerHost(CustomAuthArgs.SIGNER_MAP.get(_customAuthArgs.getNetwork()) + "/api/sign");

@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    compileSdk 32
+    compileSdk 34
 
     defaultConfig {
         minSdk 24
-        targetSdk 31
+        targetSdk 34
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "proguard-rules.pro"
@@ -29,11 +29,12 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    namespace 'org.torusresearch.customauth'
 }
 
 dependencies {
-    api 'org.torusresearch:fetch-node-details-java:3.1.0'
-    api 'org.torusresearch:torus-utils-java:3.1.2'
+    api 'org.torusresearch:fetch-node-details-java:4.1.1'
+    api 'org.torusresearch:torus-utils-java:3.3.0'
     api 'androidx.browser:browser:1.4.0'
     api 'org.web3j:crypto:4.8.8-android'
     implementation 'com.auth0.android:jwtdecode:2.0.1'
