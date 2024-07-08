@@ -1,18 +1,10 @@
 package org.torusresearch.customauth.types;
 
-import org.torusresearch.fetchnodedetails.FetchNodeDetails;
 import org.torusresearch.fetchnodedetails.types.TorusNetwork;
 
 import java.util.HashMap;
 
 public class CustomAuthArgs {
-
-    public static HashMap<TorusNetwork, String> CONTRACT_MAP = new HashMap<TorusNetwork, String>() {{
-        put(TorusNetwork.MAINNET, FetchNodeDetails.PROXY_ADDRESS_MAINNET);
-        put(TorusNetwork.TESTNET, FetchNodeDetails.PROXY_ADDRESS_TESTNET);
-        put(TorusNetwork.CYAN, FetchNodeDetails.PROXY_ADDRESS_CYAN);
-        put(TorusNetwork.AQUA, FetchNodeDetails.PROXY_ADDRESS_AQUA);
-    }};
 
     public static HashMap<TorusNetwork, String> SIGNER_MAP = new HashMap<TorusNetwork, String>() {{
         put(TorusNetwork.MAINNET, "https://signer.tor.us");
@@ -29,19 +21,22 @@ public class CustomAuthArgs {
     private boolean enableOneKey;
     private String networkUrl;
 
+    private String clientid;
 
-    public CustomAuthArgs(String browserRedirectUri, TorusNetwork network, String _redirectUri) {
+
+    public CustomAuthArgs(String browserRedirectUri, TorusNetwork network, String _redirectUri, String clientid) {
         this.redirectUri = _redirectUri;
         this.network = network;
         this.browserRedirectUri = browserRedirectUri;
+        this.clientid = clientid;
     }
 
     public CustomAuthArgs(String browserRedirectUri, TorusNetwork network) {
-        this(browserRedirectUri, network, "");
+        this(browserRedirectUri, network, "", "");
     }
 
     public CustomAuthArgs(String browserRedirectUri) {
-        this(browserRedirectUri, TorusNetwork.MAINNET, "");
+        this(browserRedirectUri, TorusNetwork.MAINNET, "", "");
     }
 
     public String getRedirectUri() {
@@ -79,4 +74,13 @@ public class CustomAuthArgs {
     public void setNetworkUrl(String networkUrl) {
         this.networkUrl = networkUrl;
     }
+
+    public String getClientId() {
+        return clientid;
+    }
+
+    public void setClientId(String clientid) {
+        this.clientid = clientid;
+    }
+
 }
