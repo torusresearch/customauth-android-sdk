@@ -21,22 +21,22 @@ public class CustomAuthArgs {
     private boolean enableOneKey;
     private String networkUrl;
 
-    private String clientid;
+    private String clientId;
 
 
-    public CustomAuthArgs(String browserRedirectUri, TorusNetwork network, String _redirectUri, String clientid) {
+    public CustomAuthArgs(String browserRedirectUri, TorusNetwork network, String _redirectUri, String clientId) {
         this.redirectUri = _redirectUri;
         this.network = network;
         this.browserRedirectUri = browserRedirectUri;
-        this.clientid = clientid;
+        this.clientId = clientId;
     }
 
-    public CustomAuthArgs(String browserRedirectUri, TorusNetwork network) {
-        this(browserRedirectUri, network, "", "");
+    public CustomAuthArgs(String browserRedirectUri, TorusNetwork network, String clientId) {
+        this(browserRedirectUri, network, "", clientId);
     }
 
-    public CustomAuthArgs(String browserRedirectUri) {
-        this(browserRedirectUri, TorusNetwork.MAINNET, "", "");
+    public CustomAuthArgs(String browserRedirectUri, String clientId) {
+        this(browserRedirectUri, TorusNetwork.MAINNET, "", clientId);
     }
 
     public String getRedirectUri() {
@@ -76,11 +76,11 @@ public class CustomAuthArgs {
     }
 
     public String getClientId() {
-        return clientid;
+        return clientId;
     }
 
     public void setClientId(String clientid) {
-        this.clientid = clientid;
+        this.clientId = clientid;
     }
 
 }
