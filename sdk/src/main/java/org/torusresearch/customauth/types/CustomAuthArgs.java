@@ -11,16 +11,16 @@ public class CustomAuthArgs {
         put(Web3AuthNetwork.TESTNET, "https://signer.tor.us");
         put(Web3AuthNetwork.CYAN, "https://signer-polygon.tor.us");
         put(Web3AuthNetwork.AQUA, "https://signer-polygon.tor.us");
+        put(Web3AuthNetwork.SAPPHIRE_MAINNET, "https://signer.tor.us");
+        put(Web3AuthNetwork.SAPPHIRE_DEVNET, "https://signer.tor.us");
     }};
-
 
     // Android package redirect uri
     private final String browserRedirectUri;
     private String redirectUri;
     private Web3AuthNetwork network;
     private boolean enableOneKey;
-    private String networkUrl;
-
+    private Web3AuthNetwork networkUrl;
     private String clientId;
 
 
@@ -67,11 +67,11 @@ public class CustomAuthArgs {
         this.enableOneKey = enableOneKey;
     }
 
-    public String getNetworkUrl() {
+    public Web3AuthNetwork getNetworkUrl() {
         return networkUrl;
     }
 
-    public void setNetworkUrl(String networkUrl) {
+    public void setNetworkUrl(Web3AuthNetwork networkUrl) {
         this.networkUrl = networkUrl;
     }
 
@@ -82,5 +82,4 @@ public class CustomAuthArgs {
     public void setClientId(String clientid) {
         this.clientId = clientid;
     }
-
 }

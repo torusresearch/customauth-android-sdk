@@ -12,6 +12,7 @@ android {
             keyPassword 'torus123'
         }
     }
+
     compileSdk 34
 
     defaultConfig {

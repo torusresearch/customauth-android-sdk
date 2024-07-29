@@ -123,8 +123,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         verifierParamsHashMap.put("verifier_id", verifierId);
         String idToken = "";
         NodeDetails nodeDetails = torusSdk.nodeDetailManager.getNodeDetails(verifier, verifierId).get();
-        TorusPublicKey publicKey = torusSdk.torusUtils.getPublicAddress(nodeDetails.getTorusNodeEndpoints(), nodeDetails.getTorusNodePub(), new VerifierArgs(verifier, verifierId)).get();
-        Log.d("public address", publicKey.getAddress());
+        TorusPublicKey publicKey = torusSdk.torusUtils.getPublicAddress(nodeDetails.getTorusNodeEndpoints(), new VerifierArgs(verifier, verifierId)).get();
+        Log.d("public address", publicKey.getFinalKeyData().walletAddress);
         // torusSdk.getTorusKey(verifier, verifierId, verifierParamsHashMap, idToken);
     }
 
@@ -169,7 +169,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 String publicAddress = torusLoginResponse.getPublicAddress();
                 this.privKey = torusLoginResponse.getPrivateKey();
                 Log.d(MainActivity.class.getSimpleName(), publicAddress);
-                ((TextView) findViewById(R.id.output)).setText(publicAddress);
+                Log.d(MainActivity.class.getSimpleName(), String.valueOf(this.privKey));
+                ((TextView) findViewById(R.id.output)).setText("Public Key: " + publicAddress);
             }
         });
     }
