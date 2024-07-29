@@ -1,41 +1,44 @@
 package org.torusresearch.customauth.types;
 
-import org.torusresearch.fetchnodedetails.types.TorusNetwork;
+import org.torusresearch.fetchnodedetails.types.Web3AuthNetwork;
 
 import java.util.HashMap;
 
 public class CustomAuthArgs {
 
-    public static HashMap<TorusNetwork, String> SIGNER_MAP = new HashMap<TorusNetwork, String>() {{
-        put(TorusNetwork.MAINNET, "https://signer.tor.us");
-        put(TorusNetwork.TESTNET, "https://signer.tor.us");
-        put(TorusNetwork.CYAN, "https://signer-polygon.tor.us");
-        put(TorusNetwork.AQUA, "https://signer-polygon.tor.us");
-        put(TorusNetwork.SAPPHIRE_MAINNET, "https://signer.tor.us");
-        put(TorusNetwork.SAPPHIRE_DEVNET, "https://signer.tor.us");
+    public static HashMap<Web3AuthNetwork, String> SIGNER_MAP = new HashMap<Web3AuthNetwork, String>() {{
+        put(Web3AuthNetwork.MAINNET, "https://signer.tor.us");
+        put(Web3AuthNetwork.TESTNET, "https://signer.tor.us");
+        put(Web3AuthNetwork.CYAN, "https://signer-polygon.tor.us");
+        put(Web3AuthNetwork.AQUA, "https://signer-polygon.tor.us");
+        put(Web3AuthNetwork.SAPPHIRE_MAINNET, "https://signer.tor.us");
+        put(Web3AuthNetwork.SAPPHIRE_DEVNET, "https://signer.tor.us");
     }};
 
     // Android package redirect uri
     private final String browserRedirectUri;
     private String redirectUri;
-    private TorusNetwork network;
+    private Web3AuthNetwork network;
     private boolean enableOneKey;
     private String networkUrl;
     private String clientId;
 
+    private String clientId;
 
-    public CustomAuthArgs(String browserRedirectUri, TorusNetwork network, String _redirectUri) {
+
+    public CustomAuthArgs(String browserRedirectUri, Web3AuthNetwork network, String _redirectUri, String clientId) {
         this.redirectUri = _redirectUri;
         this.network = network;
         this.browserRedirectUri = browserRedirectUri;
+        this.clientId = clientId;
     }
 
-    public CustomAuthArgs(String browserRedirectUri, TorusNetwork network) {
-        this(browserRedirectUri, network, "");
+    public CustomAuthArgs(String browserRedirectUri, Web3AuthNetwork network, String clientId) {
+        this(browserRedirectUri, network, "", clientId);
     }
 
-    public CustomAuthArgs(String browserRedirectUri) {
-        this(browserRedirectUri, TorusNetwork.MAINNET, "");
+    public CustomAuthArgs(String browserRedirectUri, String clientId) {
+        this(browserRedirectUri, Web3AuthNetwork.MAINNET, "", clientId);
     }
 
     public CustomAuthArgs(String browserRedirectUri, TorusNetwork network, String _redirectUri, String clientId) {
@@ -53,11 +56,11 @@ public class CustomAuthArgs {
         this.redirectUri = redirectUri;
     }
 
-    public TorusNetwork getNetwork() {
+    public Web3AuthNetwork getNetwork() {
         return network;
     }
 
-    public void setNetwork(TorusNetwork network) {
+    public void setNetwork(Web3AuthNetwork network) {
         this.network = network;
     }
 
@@ -85,7 +88,7 @@ public class CustomAuthArgs {
         return clientId;
     }
 
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
+    public void setClientId(String clientid) {
+        this.clientId = clientid;
     }
 }

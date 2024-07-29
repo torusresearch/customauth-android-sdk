@@ -27,7 +27,7 @@ import org.torusresearch.customauth.types.TorusLoginResponse;
 import org.torusresearch.customauth.types.UserCancelledException;
 import org.torusresearch.customauth.utils.Helpers;
 import org.torusresearch.fetchnodedetails.types.NodeDetails;
-import org.torusresearch.fetchnodedetails.types.TorusNetwork;
+import org.torusresearch.fetchnodedetails.types.Web3AuthNetwork;
 import org.torusresearch.torusutils.types.TorusPublicKey;
 import org.torusresearch.torusutils.types.VerifierArgs;
 
@@ -77,10 +77,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // DirectSdkArgs args = new DirectSdkArgs("torusapp://org.torusresearch.customauthandroid/redirect", TorusNetwork.TESTNET);
 
         // Option 2. Host redirect.html at your domain and proxy redirect to your app
-        // clientId is mandatory field.
-        CustomAuthArgs args = new CustomAuthArgs("https://scripts.toruswallet.io/redirect.html", TorusNetwork.SAPPHIRE_MAINNET, "torusapp://org.torusresearch.customauthandroid/redirect",
-                "BEaGnq-mY0ZOXk2UT1ivWUe0PZ_iJX4Vyb6MtpOp7RMBu_6ErTrATlfuK3IaFcvHJr27h6L1T4owkBH6srLphIw");
-        args.setEnableOneKey(true);
+        CustomAuthArgs args = new CustomAuthArgs("https://scripts.toruswallet.io/redirect.html", Web3AuthNetwork.AQUA, "torusapp://org.torusresearch.customauthandroid/redirect", "YOUR_CLIENT_ID");
+        // args.setEnableOneKey(true);
 
         // Initialize CustomAuth
         this.torusSdk = new CustomAuth(args, this);
