@@ -20,9 +20,7 @@ public class CustomAuthArgs {
     private String redirectUri;
     private Web3AuthNetwork network;
     private boolean enableOneKey;
-    private String networkUrl;
-    private String clientId;
-
+    private Web3AuthNetwork networkUrl;
     private String clientId;
 
 
@@ -39,13 +37,6 @@ public class CustomAuthArgs {
 
     public CustomAuthArgs(String browserRedirectUri, String clientId) {
         this(browserRedirectUri, Web3AuthNetwork.MAINNET, "", clientId);
-    }
-
-    public CustomAuthArgs(String browserRedirectUri, TorusNetwork network, String _redirectUri, String clientId) {
-        this.redirectUri = _redirectUri;
-        this.network = network;
-        this.browserRedirectUri = browserRedirectUri;
-        this.clientId = clientId;
     }
 
     public String getRedirectUri() {
@@ -76,11 +67,11 @@ public class CustomAuthArgs {
         this.enableOneKey = enableOneKey;
     }
 
-    public String getNetworkUrl() {
+    public Web3AuthNetwork getNetworkUrl() {
         return networkUrl;
     }
 
-    public void setNetworkUrl(String networkUrl) {
+    public void setNetworkUrl(Web3AuthNetwork networkUrl) {
         this.networkUrl = networkUrl;
     }
 

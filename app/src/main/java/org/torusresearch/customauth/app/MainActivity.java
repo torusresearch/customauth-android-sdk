@@ -123,8 +123,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         verifierParamsHashMap.put("verifier_id", verifierId);
         String idToken = "";
         NodeDetails nodeDetails = torusSdk.nodeDetailManager.getNodeDetails(verifier, verifierId).get();
-        TorusPublicKey publicKey = torusSdk.torusUtils.getPublicAddress(nodeDetails.getTorusNodeEndpoints(), nodeDetails.getTorusNodePub(), new VerifierArgs(verifier, verifierId)).get();
-        Log.d("public address", publicKey.getFinalKeyData().evmAddress);
+        TorusPublicKey publicKey = torusSdk.torusUtils.getPublicAddress(nodeDetails.getTorusNodeEndpoints(), new VerifierArgs(verifier, verifierId)).get();
+        Log.d("public address", publicKey.getFinalKeyData().walletAddress);
         // torusSdk.getTorusKey(verifier, verifierId, verifierParamsHashMap, idToken);
     }
 

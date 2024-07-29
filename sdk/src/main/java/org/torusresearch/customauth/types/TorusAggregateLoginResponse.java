@@ -1,15 +1,15 @@
 package org.torusresearch.customauth.types;
 
-import org.torusresearch.torusutils.types.RetrieveSharesResponse;
+import org.torusresearch.torusutils.types.TorusKey;
 
 import java.math.BigInteger;
 
 public class TorusAggregateLoginResponse extends TorusAggregateVerifierResponse {
     private final BigInteger privateKey;
     private final String publicAddress;
-    private final RetrieveSharesResponse retrieveSharesResponse;
+    private final TorusKey retrieveSharesResponse;
 
-    public TorusAggregateLoginResponse(TorusVerifierUnionResponse[] userInfo, BigInteger privateKey, String publicAddress, RetrieveSharesResponse retrieveSharesResponse) {
+    public TorusAggregateLoginResponse(TorusVerifierUnionResponse[] userInfo, BigInteger privateKey, String publicAddress, TorusKey retrieveSharesResponse) {
         super(userInfo);
         this.privateKey = privateKey;
         this.publicAddress = publicAddress;
@@ -24,7 +24,7 @@ public class TorusAggregateLoginResponse extends TorusAggregateVerifierResponse 
         return publicAddress;
     }
 
-    public RetrieveSharesResponse getRetrieveSharesResponse() {
+    public TorusKey getRetrieveSharesResponse() {
         return retrieveSharesResponse;
     }
 }
