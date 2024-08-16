@@ -29,7 +29,6 @@ import org.torusresearch.torusutils.types.VerifierParams;
 import org.torusresearch.torusutils.types.VerifyParams;
 import org.torusresearch.torusutils.types.common.TorusKey;
 import org.torusresearch.torusutils.types.common.TorusOptions;
-import org.torusresearch.torusutils.types.common.TorusPublicKey;
 import org.web3j.crypto.Hash;
 
 import java.math.BigInteger;
@@ -186,14 +185,7 @@ public class CustomAuth {
 
     public TorusKey getTorusKey(String verifier, String verifierId, VerifierParams verifierParams, String idToken) throws Exception {
         NodeDetails details = this.nodeDetailManager.getNodeDetails(verifier, verifierId).get();
-        TorusPublicKey torusPublicKey = torusUtils.getPublicAddress(getTorusNodeEndpoints(details), verifier, verifierId, null);
-        TorusKey shareResponse = torusUtils.retrieveShares(getTorusNodeEndpoints(details), verifier, verifierParams, idToken, null);
-        if (shareResponse == null) {
-            throw new Exception("Invalid Share response");
-        } else if (!shareResponse.getFinalKeyData().getWalletAddress().equalsIgnoreCase(torusPublicKey.getFinalKeyData().getWalletAddress())) {
-            throw new Exception("Share response doesn't match public key response");
-        }
-        return shareResponse;
+        return torusUtils.retrieveShares(getTorusNodeEndpoints(details), verifier, verifierParams, idToken, null);
     }
 
     public TorusKey getAggregateTorusKey(String verifier, String verifierId, TorusSubVerifierInfo[] subVerifierInfoArray) throws Exception {
