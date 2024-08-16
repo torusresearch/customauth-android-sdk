@@ -2,18 +2,7 @@ package org.torusresearch.customauth.types;
 
 import org.torusresearch.fetchnodedetails.types.Web3AuthNetwork;
 
-import java.util.HashMap;
-
 public class CustomAuthArgs {
-
-    public static HashMap<Web3AuthNetwork, String> SIGNER_MAP = new HashMap<Web3AuthNetwork, String>() {{
-        put(Web3AuthNetwork.MAINNET, "https://signer.tor.us");
-        put(Web3AuthNetwork.TESTNET, "https://signer.tor.us");
-        put(Web3AuthNetwork.CYAN, "https://signer-polygon.tor.us");
-        put(Web3AuthNetwork.AQUA, "https://signer-polygon.tor.us");
-        put(Web3AuthNetwork.SAPPHIRE_MAINNET, "https://signer.tor.us");
-        put(Web3AuthNetwork.SAPPHIRE_DEVNET, "https://signer.tor.us");
-    }};
 
     // Android package redirect uri
     private final String browserRedirectUri;
@@ -24,19 +13,12 @@ public class CustomAuthArgs {
     private String clientId;
 
 
-    public CustomAuthArgs(String browserRedirectUri, Web3AuthNetwork network, String _redirectUri, String clientId) {
+    public CustomAuthArgs(String browserRedirectUri, Web3AuthNetwork network, String _redirectUri, String clientId, boolean enableOneKey) {
         this.redirectUri = _redirectUri;
         this.network = network;
         this.browserRedirectUri = browserRedirectUri;
         this.clientId = clientId;
-    }
-
-    public CustomAuthArgs(String browserRedirectUri, Web3AuthNetwork network, String clientId) {
-        this(browserRedirectUri, network, "", clientId);
-    }
-
-    public CustomAuthArgs(String browserRedirectUri, String clientId) {
-        this(browserRedirectUri, Web3AuthNetwork.MAINNET, "", clientId);
+        this.enableOneKey = enableOneKey;
     }
 
     public String getRedirectUri() {

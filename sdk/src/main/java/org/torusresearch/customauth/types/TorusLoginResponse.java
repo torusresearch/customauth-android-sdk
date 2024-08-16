@@ -3,7 +3,6 @@ package org.torusresearch.customauth.types;
 import org.torusresearch.torusutils.types.FinalKeyData;
 import org.torusresearch.torusutils.types.Metadata;
 import org.torusresearch.torusutils.types.SessionData;
-import org.torusresearch.torusutils.types.TorusKey;
 
 import java.math.BigInteger;
 
@@ -11,13 +10,13 @@ public class TorusLoginResponse extends TorusSingleVerifierResponse {
     private final BigInteger privateKey;
     private final String publicAddress;
 
-    private final TorusKey retrieveSharesResponse;
+    private final org.torusresearch.torusutils.types.common.TorusKey retrieveSharesResponse;
     private final FinalKeyData finalKeyData;
     private final FinalKeyData oAuthKeyData;
     private final Metadata metadata;
     private final SessionData sessionData;
 
-    public TorusLoginResponse(TorusVerifierUnionResponse userInfo, BigInteger privateKey, String publicAddress, TorusKey retrieveSharesResponse, FinalKeyData finalKeyData,
+    public TorusLoginResponse(TorusVerifierUnionResponse userInfo, BigInteger privateKey, String publicAddress, org.torusresearch.torusutils.types.common.TorusKey retrieveSharesResponse, FinalKeyData finalKeyData,
                               FinalKeyData oAuthKeyData, Metadata metadata, SessionData sessionData) {
         super(userInfo);
         this.privateKey = privateKey;
@@ -37,7 +36,7 @@ public class TorusLoginResponse extends TorusSingleVerifierResponse {
         return publicAddress;
     }
 
-    public TorusKey getRetrieveSharesResponse() {
+    public org.torusresearch.torusutils.types.common.TorusKey getRetrieveSharesResponse() {
         return retrieveSharesResponse;
     }
 

@@ -28,15 +28,13 @@ import org.torusresearch.customauth.types.UserCancelledException;
 import org.torusresearch.customauth.utils.Helpers;
 import org.torusresearch.fetchnodedetails.types.NodeDetails;
 import org.torusresearch.fetchnodedetails.types.Web3AuthNetwork;
-import org.torusresearch.torusutils.types.TorusPublicKey;
-import org.torusresearch.torusutils.types.VerifierArgs;
+import org.torusresearch.torusutils.types.common.TorusPublicKey;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private final HashMap<String, LoginVerifier> verifierMap = new HashMap<String, LoginVerifier>() {
@@ -77,8 +75,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // DirectSdkArgs args = new DirectSdkArgs("torusapp://org.torusresearch.customauthandroid/redirect", TorusNetwork.TESTNET);
 
         // Option 2. Host redirect.html at your domain and proxy redirect to your app
-        CustomAuthArgs args = new CustomAuthArgs("https://scripts.toruswallet.io/redirect.html", Web3AuthNetwork.AQUA, "torusapp://org.torusresearch.customauthandroid/redirect", "YOUR_CLIENT_ID");
-        // args.setEnableOneKey(true);
+        CustomAuthArgs args = new CustomAuthArgs("https://scripts.toruswallet.io/redirect.html", Web3AuthNetwork.SAPPHIRE_MAINNET, "torusapp://org.torusresearch.customauthandroid/redirect", "YOUR_CLIENT_ID", true);
 
         // Initialize CustomAuth
         this.torusSdk = new CustomAuth(args, this);
@@ -90,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
-    public void launch(View view) {
+    public void launch(View view) throws Exception {
         singleLoginTest();
         // aggregateLoginTest();
     }
@@ -116,15 +113,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         textView.setText(accountInfo);
     }
 
-    public void getTorusKey(View view) throws ExecutionException, InterruptedException {
+    public void getTorusKey(View view) throws Exception {
         String verifier = "google-lrc";
         String verifierId = "hello@tor.us";
         HashMap<String, Object> verifierParamsHashMap = new HashMap<>();
         verifierParamsHashMap.put("verifier_id", verifierId);
         String idToken = "";
         NodeDetails nodeDetails = torusSdk.nodeDetailManager.getNodeDetails(verifier, verifierId).get();
-        TorusPublicKey publicKey = torusSdk.torusUtils.getPublicAddress(nodeDetails.getTorusNodeEndpoints(), new VerifierArgs(verifier, verifierId)).get();
-        Log.d("public address", publicKey.getFinalKeyData().walletAddress);
+        TorusPublicKey publicKey = torusSdk.torusUtils.getPublicAddress(nodeDetails.getTorusNodeEndpoints(), verifier, verifierId, null);
+        Log.d("public address", publicKey.getFinalKeyData().getWalletAddress());
         // torusSdk.getTorusKey(verifier, verifierId, verifierParamsHashMap, idToken);
     }
 
@@ -139,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     @SuppressLint("SetTextI18n")
-    public void singleLoginTest() {
+    public void singleLoginTest() throws Exception {
         Log.d("result:selecteditem", this.selectedLoginVerifier.toString());
         Auth0ClientOptions.Auth0ClientOptionsBuilder builder = null;
         if (this.selectedLoginVerifier.getDomain() != null) {
@@ -176,17 +173,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     @SuppressLint("SetTextI18n")
-    public void aggregateLoginTest() {
-        CompletableFuture<TorusAggregateLoginResponse> torusLoginResponseCf = this.torusSdk.triggerAggregateLogin(new AggregateLoginParams(AggregateVerifierType.SINGLE_VERIFIER_ID,
+    public void aggregateLoginTest() throws Exception {
+        CompletableFuture<TorusAggregateLoginResponse> torusLoginResponse = this.torusSdk.triggerAggregateLogin(new AggregateLoginParams(AggregateVerifierType.SINGLE_VERIFIER_ID,
                 "chai-google-aggregate-test", new SubVerifierDetails[]{
                 new SubVerifierDetails(LoginType.GOOGLE, "google-chai", "884454361223-nnlp6vtt0me9jdsm2ptg4d1dh8i0tu74.apps.googleusercontent.com")
         }));
 
-        torusLoginResponseCf.whenComplete((torusAggregateLoginResponse, error) -> {
+        torusLoginResponse.whenComplete((torusLoginResponse1, error) -> {
             if (error != null) {
                 renderError(error);
             } else {
-                String json = torusAggregateLoginResponse.getPublicAddress();
+                String json = torusLoginResponse1.getPublicAddress();
                 Log.d(MainActivity.class.getSimpleName(), json);
                 ((TextView) findViewById(R.id.output)).setText(json);
             }
