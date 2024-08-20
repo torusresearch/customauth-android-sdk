@@ -9,16 +9,26 @@ public class CustomAuthArgs {
     private String redirectUri;
     private Web3AuthNetwork network;
     private boolean enableOneKey;
-    private Web3AuthNetwork networkUrl;
-    private String clientId;
+    private String apiKey;
+    private String web3AuthClientId;
+    private Integer serverTimeOffset;
 
-
-    public CustomAuthArgs(String browserRedirectUri, Web3AuthNetwork network, String _redirectUri, String clientId, boolean enableOneKey) {
+    public CustomAuthArgs(String browserRedirectUri, Web3AuthNetwork network, String _redirectUri, boolean enableOneKey, String apiKey, String web3AuthClientId, Integer serverTimeOffset) {
         this.redirectUri = _redirectUri;
         this.network = network;
         this.browserRedirectUri = browserRedirectUri;
-        this.clientId = clientId;
         this.enableOneKey = enableOneKey;
+        if (apiKey == null) {
+            this.apiKey = "";
+        } else {
+            this.apiKey = apiKey;
+        }
+        this.web3AuthClientId = web3AuthClientId;
+        if (serverTimeOffset == null) {
+            this.serverTimeOffset = 0;
+        } else {
+            this.serverTimeOffset = serverTimeOffset;
+        }
     }
 
     public String getRedirectUri() {
@@ -49,19 +59,15 @@ public class CustomAuthArgs {
         this.enableOneKey = enableOneKey;
     }
 
-    public Web3AuthNetwork getNetworkUrl() {
-        return networkUrl;
+    public String getWeb3AuthClientId() {
+        return web3AuthClientId;
     }
 
-    public void setNetworkUrl(Web3AuthNetwork networkUrl) {
-        this.networkUrl = networkUrl;
+    public void setWeb3AuthClientId(String web3AuthClientId) {
+        this.web3AuthClientId = web3AuthClientId;
     }
 
-    public String getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(String clientid) {
-        this.clientId = clientid;
+    public Integer getServerTimeOffset() {
+        return serverTimeOffset;
     }
 }

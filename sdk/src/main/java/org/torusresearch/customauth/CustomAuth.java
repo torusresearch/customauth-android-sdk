@@ -49,7 +49,7 @@ public class CustomAuth {
         this.customAuthArgs = _customAuthArgs;
         this.nodeDetailManager = new FetchNodeDetails(_customAuthArgs.getNetwork());
 
-        TorusOptions opts = new TorusOptions(_customAuthArgs.getClientId(), _customAuthArgs.getNetwork(), null, 0,
+        TorusOptions opts = new TorusOptions(_customAuthArgs.getWeb3AuthClientId(), _customAuthArgs.getNetwork(), null, _customAuthArgs.getServerTimeOffset(),
                 _customAuthArgs.isEnableOneKey());
         try {
             this.torusUtils = new TorusUtils(opts);
@@ -139,7 +139,6 @@ public class CustomAuth {
                 // All promises would have been resolved correctly by here
                 userInfoArray.add(userInfoPromise.join());
             }
-            // userInfoPromises.stream().map(CompletableFuture::join).collect(Collectors.toList())
             AggregateVerifierParams aggregateVerifierParams = new AggregateVerifierParams();
             aggregateVerifierParams.setVerify_params(new VerifyParams[subVerifierDetailsArray.length]);
             aggregateVerifierParams.setSub_verifier_ids(new String[subVerifierDetailsArray.length]);
@@ -213,9 +212,17 @@ public class CustomAuth {
 
     private String[] getTorusNodeEndpoints(NodeDetails nodeDetails) {
         if(customAuthArgs.getNetwork().toString().contains("sapphire")) {
-            return nodeDetails.getTorusNodeSSSEndpoints();
+            return getTorusNodeSSSEndpoints(nodeDetails);
         } else {
-            return nodeDetails.getTorusNodeEndpoints();
+            return getTorusNode_Endpoints(nodeDetails);
         }
+    }
+
+    private String[] getTorusNode_Endpoints(NodeDetails nodeDetails) {
+        return nodeDetails.getTorusNodeEndpoints();
+    }
+
+    private String[] getTorusNodeSSSEndpoints(NodeDetails nodeDetails) {
+        return nodeDetails.getTorusNodeSSSEndpoints();
     }
 }
