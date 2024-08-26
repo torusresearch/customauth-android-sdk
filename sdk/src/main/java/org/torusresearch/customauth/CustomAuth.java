@@ -213,15 +213,15 @@ public class CustomAuth {
         return this.getTorusKey(verifier, aggregateVerifierId, aggregateVerifierParamsHashMap, aggregateIdToken);
     }
 
-    private String[] getTorusNodeEndpoints(NodeDetails nodeDetails) {
+    private String[] getTorusEndpoints(NodeDetails nodeDetails) {
         if(customAuthArgs.getNetwork().toString().contains("sapphire")) {
             return getTorusNodeSSSEndpoints(nodeDetails);
         } else {
-            return getTorusNode_Endpoints(nodeDetails);
+            return getTorusNodeEndpoints(nodeDetails);
         }
     }
 
-    private String[] getTorusNode_Endpoints(NodeDetails nodeDetails) {
+    private String[] getTorusNodeEndpoints(NodeDetails nodeDetails) {
         return nodeDetails.getTorusNodeEndpoints();
     }
 
