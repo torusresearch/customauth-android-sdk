@@ -11,18 +11,18 @@ public class TorusLoginResponse extends TorusSingleVerifierResponse {
     private final BigInteger privateKey;
     private final String publicAddress;
 
-    private final TorusKey retrieveSharesResponse;
+    private final TorusKey retrieveKeyResponse;
     private final FinalKeyData finalKeyData;
     private final FinalKeyData oAuthKeyData;
     private final Metadata metadata;
     private final SessionData sessionData;
 
-    public TorusLoginResponse(TorusVerifierUnionResponse userInfo, BigInteger privateKey, String publicAddress, TorusKey retrieveSharesResponse, FinalKeyData finalKeyData,
+    public TorusLoginResponse(TorusVerifierUnionResponse userInfo, BigInteger privateKey, String publicAddress, TorusKey retrieveKeyResponse, FinalKeyData finalKeyData,
                               FinalKeyData oAuthKeyData, Metadata metadata, SessionData sessionData) {
         super(userInfo);
         this.privateKey = privateKey;
         this.publicAddress = publicAddress;
-        this.retrieveSharesResponse = retrieveSharesResponse;
+        this.retrieveKeyResponse = retrieveKeyResponse;
         this.finalKeyData = finalKeyData;
         this.oAuthKeyData = oAuthKeyData;
         this.metadata = metadata;
@@ -38,7 +38,7 @@ public class TorusLoginResponse extends TorusSingleVerifierResponse {
     }
 
     public TorusKey getRetrieveSharesResponse() {
-        return retrieveSharesResponse;
+        return retrieveKeyResponse;
     }
 
     public FinalKeyData getFinalKeyData() {
