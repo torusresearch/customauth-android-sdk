@@ -160,10 +160,10 @@ public class CustomAuth {
             String aggregateTokenString = TextUtils.join(Character.toString((char) 29), aggregateIdTokenSeeds);
             String aggregateIdToken = Hash.sha3String(aggregateTokenString).substring(2);
             aggregateVerifierParams.setVerifier_id(aggregateVerifierId);
-            VerifierParams aggregateVerifierParamsHashMap = new VerifierParams(aggregateVerifierParams.getVerifier_id(), null,
+            VerifierParams verifierParams = new VerifierParams(aggregateVerifierParams.getVerifier_id(), null,
                     aggregateVerifierParams.getSub_verifier_ids(), aggregateVerifierParams.getVerify_params());
             try {
-                TorusKey torusKey = this.getTorusKey(aggregateLoginParams.getVerifierIdentifier(), aggregateVerifierId, aggregateVerifierParamsHashMap, aggregateIdToken);
+                TorusKey torusKey = this.getTorusKey(aggregateLoginParams.getVerifierIdentifier(), aggregateVerifierId, verifierParams, aggregateIdToken);
                 return CompletableFuture.completedFuture(Pair.create(userInfoArray, torusKey));
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -208,9 +208,9 @@ public class CustomAuth {
         String aggregateTokenString = TextUtils.join(Character.toString((char) 29), aggregateIdTokenSeeds);
         String aggregateIdToken = Hash.sha3String(aggregateTokenString).substring(2);
         aggregateVerifierParams.setVerifier_id(aggregateVerifierId);
-        VerifierParams aggregateVerifierParamsHashMap = new VerifierParams(aggregateVerifierParams.getVerifier_id(), null,
+        VerifierParams verifierParams = new VerifierParams(aggregateVerifierParams.getVerifier_id(), null,
                 aggregateVerifierParams.getSub_verifier_ids(), aggregateVerifierParams.getVerify_params());
-        return this.getTorusKey(verifier, aggregateVerifierId, aggregateVerifierParamsHashMap, aggregateIdToken);
+        return this.getTorusKey(verifier, aggregateVerifierId, verifierParams, aggregateIdToken);
     }
 
     private String[] getTorusEndpoints(NodeDetails nodeDetails) {
