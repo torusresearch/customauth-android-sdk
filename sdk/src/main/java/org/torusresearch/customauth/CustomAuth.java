@@ -36,6 +36,7 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 
@@ -86,7 +87,7 @@ public class CustomAuth {
                             torusVerifierResponse.getVerifier(), torusVerifierResponse.getVerifierId(), torusVerifierResponse.getTypeOfLogin());
                     response.setAccessToken(loginWindowResponse.getAccessToken());
                     response.setIdToken(loginWindowResponse.getIdToken());
-                    return new TorusLoginResponse(response, new BigInteger(retrieveKeyResponse.getFinalKeyData().getPrivKey(), 16), retrieveKeyResponse.getFinalKeyData().getWalletAddress(),
+                    return new TorusLoginResponse(response, new BigInteger(Objects.requireNonNull(retrieveKeyResponse.getFinalKeyData().getPrivKey()), 16), retrieveKeyResponse.getFinalKeyData().getWalletAddress(),
                             retrieveKeyResponse,
                             retrieveKeyResponse.getFinalKeyData(),
                             retrieveKeyResponse.getFinalKeyData(),
@@ -179,7 +180,7 @@ public class CustomAuth {
                 unionResponses[i].setAccessToken(y.getAccessToken());
                 unionResponses[i].setIdToken(y.getIdToken());
             }
-            return new TorusAggregateLoginResponse(unionResponses, new BigInteger(retrieveKeyResponse.getFinalKeyData().getPrivKey(), 16),
+            return new TorusAggregateLoginResponse(unionResponses, new BigInteger(Objects.requireNonNull(retrieveKeyResponse.getFinalKeyData().getPrivKey()), 16),
                     retrieveKeyResponse.getFinalKeyData().getWalletAddress(),
                     retrieveKeyResponse);
         });
