@@ -34,8 +34,7 @@ android {
 
 dependencies {
     api 'org.torusresearch:fetch-node-details-java:5.0.0'
-    api 'org.torusresearch:torus-utils-java:import_private_key-SNAPSHOT'
-    // TODO: replace with new release version
+    api 'org.torusresearch:torus-utils-java:4.0.0'
     api 'androidx.browser:browser:1.4.0'
     api 'org.web3j:crypto:4.8.8-android'
     implementation 'com.auth0.android:jwtdecode:2.0.1'
