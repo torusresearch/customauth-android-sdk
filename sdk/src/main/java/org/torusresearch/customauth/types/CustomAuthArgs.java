@@ -18,11 +18,7 @@ public class CustomAuthArgs {
         this.network = network;
         this.browserRedirectUri = browserRedirectUri;
         this.enableOneKey = enableOneKey;
-        if (apiKey == null) {
-            this.apiKey = "";
-        } else {
-            this.apiKey = apiKey;
-        }
+        this.apiKey = apiKey;
         this.web3AuthClientId = web3AuthClientId;
         if (serverTimeOffset == null) {
             this.serverTimeOffset = 0;
@@ -69,5 +65,9 @@ public class CustomAuthArgs {
 
     public Integer getServerTimeOffset() {
         return serverTimeOffset;
+    }
+
+    public String getApiKey() {
+        return apiKey;
     }
 }
