@@ -2,41 +2,29 @@ package org.torusresearch.customauth.types;
 
 import org.torusresearch.fetchnodedetails.types.Web3AuthNetwork;
 
-import java.util.HashMap;
-
 public class CustomAuthArgs {
-
-    public static HashMap<Web3AuthNetwork, String> SIGNER_MAP = new HashMap<Web3AuthNetwork, String>() {{
-        put(Web3AuthNetwork.MAINNET, "https://signer.tor.us");
-        put(Web3AuthNetwork.TESTNET, "https://signer.tor.us");
-        put(Web3AuthNetwork.CYAN, "https://signer-polygon.tor.us");
-        put(Web3AuthNetwork.AQUA, "https://signer-polygon.tor.us");
-    }};
-
 
     // Android package redirect uri
     private final String browserRedirectUri;
     private String redirectUri;
     private Web3AuthNetwork network;
     private boolean enableOneKey;
-    private String networkUrl;
+    private String apiKey;
+    private String web3AuthClientId;
+    private Integer serverTimeOffset;
 
-    private String clientId;
-
-
-    public CustomAuthArgs(String browserRedirectUri, Web3AuthNetwork network, String _redirectUri, String clientId) {
+    public CustomAuthArgs(String browserRedirectUri, Web3AuthNetwork network, String _redirectUri, boolean enableOneKey, String apiKey, String web3AuthClientId, Integer serverTimeOffset) {
         this.redirectUri = _redirectUri;
         this.network = network;
         this.browserRedirectUri = browserRedirectUri;
-        this.clientId = clientId;
-    }
-
-    public CustomAuthArgs(String browserRedirectUri, Web3AuthNetwork network, String clientId) {
-        this(browserRedirectUri, network, "", clientId);
-    }
-
-    public CustomAuthArgs(String browserRedirectUri, String clientId) {
-        this(browserRedirectUri, Web3AuthNetwork.MAINNET, "", clientId);
+        this.enableOneKey = enableOneKey;
+        this.apiKey = apiKey;
+        this.web3AuthClientId = web3AuthClientId;
+        if (serverTimeOffset == null) {
+            this.serverTimeOffset = 0;
+        } else {
+            this.serverTimeOffset = serverTimeOffset;
+        }
     }
 
     public String getRedirectUri() {
@@ -67,20 +55,19 @@ public class CustomAuthArgs {
         this.enableOneKey = enableOneKey;
     }
 
-    public String getNetworkUrl() {
-        return networkUrl;
+    public String getWeb3AuthClientId() {
+        return web3AuthClientId;
     }
 
-    public void setNetworkUrl(String networkUrl) {
-        this.networkUrl = networkUrl;
+    public void setWeb3AuthClientId(String web3AuthClientId) {
+        this.web3AuthClientId = web3AuthClientId;
     }
 
-    public String getClientId() {
-        return clientId;
+    public Integer getServerTimeOffset() {
+        return serverTimeOffset;
     }
 
-    public void setClientId(String clientid) {
-        this.clientId = clientid;
+    public String getApiKey() {
+        return apiKey;
     }
-
 }

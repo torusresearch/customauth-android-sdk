@@ -1,19 +1,21 @@
 package org.torusresearch.customauth.types;
 
+import org.torusresearch.torusutils.types.VerifyParams;
+
 public class AggregateVerifierParams {
-    private VerifierParams[] verify_params;
+    private VerifyParams[] verify_params;
     private String[] sub_verifier_ids;
     private String verifier_id;
 
-    public VerifierParams[] getVerify_params() {
+    public VerifyParams[] getVerify_params() {
         return verify_params;
     }
 
-    public void setVerify_params(VerifierParams[] verify_params) {
+    public void setVerify_params(VerifyParams[] verify_params) {
         this.verify_params = verify_params;
     }
 
-    public void setVerifyParamItem(VerifierParams verify_param, int index) {
+    public void setVerifyParamItem(VerifyParams verify_param, int index) {
         this.verify_params[index] = verify_param;
     }
 
@@ -35,23 +37,5 @@ public class AggregateVerifierParams {
 
     public void setVerifier_id(String verifier_id) {
         this.verifier_id = verifier_id;
-    }
-
-    public static class VerifierParams {
-        private String verifier_id;
-        private String idtoken;
-
-        public VerifierParams(String verifier_id, String idtoken) {
-            this.verifier_id = verifier_id;
-            this.idtoken = idtoken;
-        }
-
-        public String getVerifier_id() {
-            return verifier_id;
-        }
-
-        public String getIdtoken() {
-            return idtoken;
-        }
     }
 }
