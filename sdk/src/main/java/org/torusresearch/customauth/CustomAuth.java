@@ -143,24 +143,27 @@ public class CustomAuth {
                 // All promises would have been resolved correctly by here
                 userInfoArray.add(userInfoPromise.join());
             }
-            AggregateVerifierParams aggregateVerifierParams = new AggregateVerifierParams();
-            aggregateVerifierParams.setVerify_params(new VerifyParams[subVerifierDetailsArray.length]);
-            aggregateVerifierParams.setSub_verifier_ids(new String[subVerifierDetailsArray.length]);
+
+            VerifyParams[] params = new VerifyParams[subVerifierDetailsArray.length];
+            String[] subVerifierDetails = new String[subVerifierDetailsArray.length];
+
             List<String> aggregateIdTokenSeeds = new ArrayList<>();
             String aggregateVerifierId = "";
             for (int i = 0; i < subVerifierDetailsArray.length; i++) {
                 LoginWindowResponse loginParams = loginParamsArray.get(i);
                 TorusVerifierResponse userInfo = userInfoArray.get(i);
                 String finalToken = !Helpers.isEmpty(loginParams.getIdToken()) ? loginParams.getIdToken() : loginParams.getAccessToken();
-                aggregateVerifierParams.setVerifyParamItem(new VerifyParams(userInfo.getVerifierId(), finalToken), i);
-                aggregateVerifierParams.setSubVerifierIdItem(userInfo.getVerifier(), i);
+                params[i] =new VerifyParams(userInfo.getVerifierId(), finalToken);
+                subVerifierDetails[i] = userInfo.getVerifier();
                 aggregateIdTokenSeeds.add(finalToken);
                 aggregateVerifierId = userInfo.getVerifierId();
             }
             Collections.sort(aggregateIdTokenSeeds);
             String aggregateTokenString = TextUtils.join(Character.toString((char) 29), aggregateIdTokenSeeds);
             String aggregateIdToken = Hash.sha3String(aggregateTokenString).substring(2);
-            aggregateVerifierParams.setVerifier_id(aggregateVerifierId);
+
+            AggregateVerifierParams aggregateVerifierParams = new AggregateVerifierParams(params, subVerifierDetails, aggregateVerifierId);
+
             VerifierParams verifierParams = new VerifierParams(aggregateVerifierParams.getVerifier_id(), null,
                     aggregateVerifierParams.getSub_verifier_ids(), aggregateVerifierParams.getVerify_params());
             try {
@@ -192,23 +195,26 @@ public class CustomAuth {
     }
 
     public TorusKey getAggregateTorusKey(String verifier, String verifierId, TorusSubVerifierInfo[] subVerifierInfoArray) throws Exception {
-        AggregateVerifierParams aggregateVerifierParams = new AggregateVerifierParams();
-        aggregateVerifierParams.setVerify_params(new VerifyParams[subVerifierInfoArray.length]);
-        aggregateVerifierParams.setSub_verifier_ids(new String[subVerifierInfoArray.length]);
         List<String> aggregateIdTokenSeeds = new ArrayList<>();
         String aggregateVerifierId = "";
+
+        VerifyParams[] params = new VerifyParams[subVerifierInfoArray.length];
+        String[] subVerifierDetails = new String[subVerifierInfoArray.length];
+
         for (int i = 0; i < subVerifierInfoArray.length; i++) {
             TorusSubVerifierInfo userInfo = subVerifierInfoArray[i];
             String finalToken = userInfo.getIdToken();
-            aggregateVerifierParams.setVerifyParamItem(new VerifyParams(verifierId, finalToken), i);
-            aggregateVerifierParams.setSubVerifierIdItem(userInfo.getVerifier(), i);
+            params[i] = new VerifyParams(verifierId, finalToken);
+            subVerifierDetails[i] = userInfo.getVerifier();
             aggregateIdTokenSeeds.add(finalToken);
             aggregateVerifierId = verifierId;
         }
+
         Collections.sort(aggregateIdTokenSeeds);
         String aggregateTokenString = TextUtils.join(Character.toString((char) 29), aggregateIdTokenSeeds);
         String aggregateIdToken = Hash.sha3String(aggregateTokenString).substring(2);
-        aggregateVerifierParams.setVerifier_id(aggregateVerifierId);
+
+        AggregateVerifierParams aggregateVerifierParams = new AggregateVerifierParams(params, subVerifierDetails, verifierId);
         VerifierParams verifierParams = new VerifierParams(aggregateVerifierParams.getVerifier_id(), null,
                 aggregateVerifierParams.getSub_verifier_ids(), aggregateVerifierParams.getVerify_params());
         return this.getTorusKey(verifier, aggregateVerifierId, verifierParams, aggregateIdToken);
